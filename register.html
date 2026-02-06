@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Farm Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #27ae60;
+            --primary-dark: #229954;
+            --secondary: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --danger: #e74c3c;
+            --success: #27ae60;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .register-container {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        }
+
+        input.error, select.error {
+            border-color: var(--danger);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .password-strength {
+            font-size: 12px;
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .password-strength.show {
+            display: block;
+        }
+
+        .password-strength.weak {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .password-strength.medium {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .password-strength.strong {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-wrapper input {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <div class="logo">
+                <h1>🌾 Farm Guide</h1>
+                <p>Join Thousands of Smart Farmers</p>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                Registration successful! Redirecting to login...
+            </div>
+
+            <form id="registerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="Your first name" required>
+                        <div class="error-message" id="firstNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Your last name" required>
+                        <div class="error-message" id="lastNameError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="10 digit phone number" required>
+                    <div class="error-message" id="phoneError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="farmState">State/Region</label>
+                    <select id="farmState" name="farmState" required>
+                        <option value="">Select your state</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Haryana">Haryana</option>
+                        <option value="Rajasthan">Rajasthan</option>
+                        <option value="Gujarat">Gujarat</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                        <option value="Telangana">Telangana</option>
+                        <option value="Bihar">Bihar</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    </select>
+                    <div class="error-message" id="stateError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="At least 8 characters" required>
+                    <div class="password-strength" id="passwordStrength"></div>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter password" required>
+                    <div class="error-message" id="confirmPasswordError"></div>
+                </div>
+
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                    <label for="agreeTerms">I agree to the Terms & Conditions</label>
+                </div>
+
+                <div class="loading" id="loading">
+                    Creating your account... <span>⏳</span>
+                </div>
+
+                <button type="submit">Create Account</button>
+            </form>
+
+            <div class="login-link">
+                Already have an account? <a href="login.html">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const passwordInput = document.getElementById('password');
+        const passwordStrength = document.getElementById('passwordStrength');
+
+        // Password strength indicator
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            let strength = 'weak';
+            let message = '❌ Weak password';
+
+            if (password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password) && /[^a-zA-Z0-9]/.test(password)) {
+                strength = 'strong';
+                message = '✅ Strong password';
+            } else if (password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
+                strength = 'medium';
+                message = '⚠️ Medium password';
+            }
+
+            passwordStrength.className = `password-strength show ${strength}`;
+            passwordStrength.textContent = message;
+        });
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const farmState = document.getElementById('farmState').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+
+            let isValid = true;
+
+            // Validation
+            if (firstName.length < 2) {
+                showError('firstNameError', 'First name must be at least 2 characters');
+                isValid = false;
+            } else clearError('firstNameError', 'firstName');
+
+            if (lastName.length < 2) {
+                showError('lastNameError', 'Last name must be at least 2 characters');
+                isValid = false;
+            } else clearError('lastNameError', 'lastName');
+
+            if (!email.includes('@')) {
+                showError('emailError', 'Please enter a valid email');
+                isValid = false;
+            } else clearError('emailError', 'email');
+
+            if (phone.length !== 10 || !isDigits(phone)) {
+                showError('phoneError', 'Please enter a valid 10-digit phone number');
+                isValid = false;
+            } else clearError('phoneError', 'phone');
+
+            if (!farmState) {
+                showError('stateError', 'Please select your state');
+                isValid = false;
+            } else clearError('stateError', 'farmState');
+
+            if (password.length < 8) {
+                showError('passwordError', 'Password must be at least 8 characters');
+                isValid = false;
+            } else clearError('passwordError', 'password');
+
+            if (password !== confirmPassword) {
+                showError('confirmPasswordError', 'Passwords do not match');
+                isValid = false;
+            } else clearError('confirmPasswordError', 'confirmPassword');
+
+            if (!agreeTerms) {
+                alert('Please agree to the Terms & Conditions');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Check if user already exists
+            const users = JSON.parse(localStorage.getItem('farmGuideUsers') || '{}');
+            if (users[email]) {
+                showError('emailError', 'Email already registered');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+
+            // Simulate server registration
+            setTimeout(() => {
+                // Store new user
+                users[email] = {
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                    farmState,
+                    password,
+                    registeredDate: new Date(),
+                    preferences: {}
+                };
+
+                localStorage.setItem('farmGuideUsers', JSON.stringify(users));
+
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('successMessage').classList.add('show');
+
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }, 1500);
+        });
+
+        function showError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            const inputEl = errorEl.previousElementSibling;
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+            inputEl.classList.add('error');
+        }
+
+        function clearError(elementId, inputId) {
+            const errorEl = document.getElementById(elementId);
+            const inputEl = document.getElementById(inputId);
+            errorEl.classList.remove('show');
+            inputEl.classList.remove('error');
+        }
+
+        function isDigits(str) {
+            return /^\d+$/.test(str);
+        }
+    </script>
+</body>
+</html>

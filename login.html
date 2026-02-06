@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Farm Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #27ae60;
+            --primary-dark: #229954;
+            --secondary: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --danger: #e74c3c;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-container {
+            display: flex;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 420px;
+            padding: 50px 40px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        }
+
+        input.error {
+            border-color: var(--danger);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .checkbox-wrapper input {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .demo-credentials {
+            background: #f0f8ff;
+            border-left: 4px solid var(--primary);
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: var(--dark);
+        }
+
+        .demo-credentials strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">
+                <h1>🌾 Farm Guide</h1>
+                <p>Smart Irrigation & Crop Management</p>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                Login successful! Redirecting...
+            </div>
+
+            <div class="demo-credentials">
+                <strong>Demo Account:</strong>
+                Email: demo@farmguide.com<br>
+                Password: Demo@123
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+
+                <div class="remember-forgot">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember" style="margin: 0;">Remember me</label>
+                    </div>
+                    <a class="forgot-link" onclick="showForgotPassword()">Forgot Password?</a>
+                </div>
+
+                <div class="loading" id="loading">
+                    Logging in... <span>⏳</span>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <div class="signup-link">
+                Don't have an account? <a href="register.html">Create one</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo credentials
+        const DEMO_ACCOUNTS = {
+            'demo@farmguide.com': 'Demo@123',
+            'farmer@example.com': 'Farmer@123',
+            'test@farmguide.com': 'Test@123'
+        };
+
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+
+            // Validate
+            let isValid = true;
+            
+            if (!email.includes('@')) {
+                document.getElementById('emailError').textContent = 'Please enter a valid email';
+                document.getElementById('emailError').classList.add('show');
+                document.getElementById('email').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('emailError').classList.remove('show');
+                document.getElementById('email').classList.remove('error');
+            }
+
+            if (password.length < 6) {
+                document.getElementById('passwordError').textContent = 'Password must be at least 6 characters';
+                document.getElementById('passwordError').classList.add('show');
+                document.getElementById('password').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('passwordError').classList.remove('show');
+                document.getElementById('password').classList.remove('error');
+            }
+
+            if (!isValid) return;
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+
+            // Simulate authentication
+            setTimeout(() => {
+                // Check demo accounts or stored users
+                const users = JSON.parse(localStorage.getItem('farmGuideUsers') || '{}');
+                
+                if ((DEMO_ACCOUNTS[email] && DEMO_ACCOUNTS[email] === password) || 
+                    (users[email] && users[email].password === password)) {
+                    
+                    // Store login session
+                    const userData = {
+                        email: email,
+                        loginTime: new Date(),
+                        remember: remember
+                    };
+                    
+                    localStorage.setItem('farmGuideUser', JSON.stringify(userData));
+                    
+                    if (remember) {
+                        localStorage.setItem('farmGuideRemember', JSON.stringify(userData));
+                    }
+
+                    document.getElementById('loading').classList.remove('show');
+                    document.getElementById('successMessage').classList.add('show');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } else {
+                    document.getElementById('loading').classList.remove('show');
+                    document.getElementById('emailError').textContent = 'Invalid email or password';
+                    document.getElementById('emailError').classList.add('show');
+                    document.getElementById('password').classList.add('error');
+                }
+            }, 1000);
+        });
+
+        // Check if already logged in
+        window.addEventListener('load', () => {
+            const currentUser = localStorage.getItem('farmGuideUser');
+            if (currentUser) {
+                window.location.href = 'dashboard.html';
+            }
+
+            // Auto-fill if remember me was checked
+            const remember = localStorage.getItem('farmGuideRemember');
+            if (remember) {
+                const userData = JSON.parse(remember);
+                document.getElementById('email').value = userData.email;
+            }
+        });
+
+        function showForgotPassword() {
+            alert('Password reset feature coming soon!\n\nFor now, use demo@farmguide.com with password: Demo@123');
+        }
+    </script>
+</body>
+</html>
