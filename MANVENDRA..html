@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>🌾 CROP WATER STRESS SIMULATOR — AI Image Generator with Real-time Analysis</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #27ae60;
+      --primary-dark: #229954;
+      --secondary: #f39c12;
+      --accent: #e74c3c;
+      --dark: #2c3e50;
+      --darker: #1a252f;
+      --light: #ecf0f1;
+      --lighter: #f8f9fa;
+      --muted: #95a5a6;
+      --shadow: 0 10px 40px rgba(0,0,0,0.15);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.2);
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #2c3e50;
+    }
+
+    body.dark {
+      background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+      color: #ecf0f1;
+    }
+
+    /* ============ HEADER ============ */
+    .header {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      padding: 30px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+      color: white;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: -0.5px;
+    }
+
+    .header-subtitle {
+      display: block;
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.95;
+    }
+
+    .theme-toggle {
+      width: 50px;
+      height: 50px;
+      background: rgba(255,255,255,0.2);
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 24px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255,255,255,0.35);
+      transform: scale(1.08);
+    }
+
+    /* ============ MAIN LAYOUT ============ */
+    .app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 30px;
+      padding: 40px;
+      max-width: 1800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ============ PANEL STYLES ============ */
+    .panel {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    body.dark .panel {
+      background: rgba(44,62,80,0.7);
+      color: #ecf0f1;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    body.dark .section {
+      border-bottom-color: rgba(255,255,255,0.08);
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #27ae60;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      background: linear-gradient(180deg, #27ae60 0%, #229954 100%);
+      border-radius: 2px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #2c3e50;
+    }
+
+    body.dark label {
+      color: #ecf0f1;
+    }
+
+    input[type=number],
+    input[type=text],
+    select {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 10px;
+      border: 2px solid #e0e6ed;
+      background: #f8f9fa;
+      color: #2c3e50;
+      font-size: 13px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      transition: var(--transition);
+      margin-bottom: 12px;
+    }
+
+    body.dark input,
+    body.dark select {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(39,174,96,0.3);
+      color: #ecf0f1;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #27ae60;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(39,174,96,0.15);
+    }
+
+    .help-text {
+      font-size: 11px;
+      color: #95a5a6;
+      margin-top: -8px;
+      margin-bottom: 12px;
+      font-weight: 400;
+    }
+
+    button {
+      border: none;
+      padding: 14px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      font-family: 'Poppins', sans-serif;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      color: white;
+      box-shadow: 0 8px 24px rgba(39,174,96,0.3);
+      margin-bottom: 10px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(39,174,96,0.4);
+    }
+
+    .soil-profile {
+      background: linear-gradient(135deg, rgba(52,152,219,0.08) 0%, rgba(46,204,113,0.08) 100%);
+      border: 1px solid rgba(52,152,219,0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .soil-profile:hover {
+      transform: translateX(4px);
+      box-shadow: 0 6px 18px rgba(39,174,96,0.2);
+    }
+
+    .soil-profile.active {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      color: white;
+      border-color: #27ae60;
+    }
+
+    .soil-profile-name {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .soil-profile-desc {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    /* ============ VIZ AREA ============ */
+    .viz-area {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .status {
+      padding: 20px 25px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(39,174,96,0.1) 0%, rgba(243,156,18,0.05) 100%);
+      border: 2px solid rgba(39,174,96,0.3);
+      color: #27ae60;
+      letter-spacing: 0.5px;
+    }
+
+    .status.loading {
+      animation: pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* ============ CROP IMAGE SECTION ============ */
+    .crop-image-section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    body.dark .crop-image-section {
+      background: rgba(44,62,80,0.7);
+    }
+
+    .crop-image-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #27ae60;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #cropImage {
+      width: 100%;
+      height: 450px;
+      border-radius: 15px;
+      object-fit: cover;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-bottom: 15px;
+    }
+
+    .crop-status-info {
+      background: linear-gradient(135deg, rgba(39,174,96,0.1) 0%, rgba(243,156,18,0.05) 100%);
+      border: 2px solid rgba(39,174,96,0.2);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      margin-top: 15px;
+    }
+
+    body.dark .crop-status-info {
+      background: linear-gradient(135deg, rgba(39,174,96,0.15) 0%, rgba(243,156,18,0.08) 100%);
+      border-color: rgba(39,174,96,0.3);
+    }
+
+    .crop-info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+
+    .crop-info-item {
+      text-align: center;
+      padding: 12px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 10px;
+    }
+
+    body.dark .crop-info-item {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .crop-info-label {
+      font-size: 11px;
+      color: #95a5a6;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .crop-info-value {
+      font-size: 18px;
+      font-weight: 800;
+      color: #27ae60;
+    }
+
+    .image-loading {
+      width: 100%;
+      height: 450px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(39,174,96,0.1) 0%, rgba(243,156,18,0.05) 100%);
+      border-radius: 15px;
+      color: #27ae60;
+      font-weight: 600;
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 1400px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+      }
+      .header h1 {
+        font-size: 24px;
+      }
+      .container {
+        padding: 20px;
+        gap: 15px;
+      }
+      .panel {
+        padding: 20px;
+      }
+      .crop-info-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- HEADER -->
+    <div class="header">
+      <div class="logo-section">
+        <div class="logo-icon">🌾</div>
+        <div>
+          <h1>Crop Water Stress Simulator</h1>
+          <span class="header-subtitle">AI Image Generator + Irrigation Analysis</span>
+        </div>
+      </div>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+      <!-- LEFT SIDEBAR -->
+      <div class="panel">
+        <!-- CROP SELECTION -->
+        <div class="section">
+          <div class="section-title">Select Your Crop</div>
+          <select id="cropSelect">
+            <option value="rice">🌾 Rice</option>
+            <option value="wheat">🌾 Wheat</option>
+            <option value="corn">🌽 Corn (Maize)</option>
+            <option value="sugarcane">🌱 Sugarcane</option>
+            <option value="cotton">⚪ Cotton</option>
+            <option value="tomato">🍅 Tomato</option>
+            <option value="potato">🥔 Potato</option>
+            <option value="groundnut">🥜 Groundnut</option>
+          </select>
+        </div>
+
+        <!-- SOIL TYPE SELECTION -->
+        <div class="section">
+          <div class="section-title">Your Soil Type</div>
+          <div class="soil-profile active" data-soil="loam">
+            <div class="soil-profile-name">🔵 Loam (Balanced)</div>
+            <div class="soil-profile-desc">Good water retention & drainage</div>
+          </div>
+          <div class="soil-profile" data-soil="clay">
+            <div class="soil-profile-name">🟤 Clay</div>
+            <div class="soil-profile-desc">High water retention</div>
+          </div>
+          <div class="soil-profile" data-soil="sandy">
+            <div class="soil-profile-name">🟡 Sandy</div>
+            <div class="soil-profile-desc">Low water retention</div>
+          </div>
+          <div class="soil-profile" data-soil="silty">
+            <div class="soil-profile-name">🟢 Silty</div>
+            <div class="soil-profile-desc">Moderate retention</div>
+          </div>
+        </div>
+
+        <!-- CURRENT CONDITIONS -->
+        <div class="section">
+          <div class="section-title">Current Soil Moisture</div>
+          <label>Soil Water (mm)</label>
+          <input id="s0" type="number" value="45" min="0" max="200" />
+          <p class="help-text">Estimate using soil feel or moisture meter</p>
+        </div>
+
+        <!-- WEATHER -->
+        <div class="section">
+          <div class="section-title">Expected Weather</div>
+          <label>Rainfall Chance (%)</label>
+          <input id="p_rain" type="number" min="0" max="100" value="15" />
+          <label>Daily Evaporation (mm)</label>
+          <input id="et0" type="number" step="0.1" value="5.5" />
+        </div>
+
+        <!-- PLANNING HORIZON -->
+        <div class="section">
+          <div class="section-title">Planning Horizon</div>
+          <label>Days to plan (days)</label>
+          <input id="horizon" type="number" min="3" max="30" value="14" />
+        </div>
+
+        <!-- ANALYZE BUTTON -->
+        <button class="btn-primary" id="generateBtn">🎨 GENERATE CROP IMAGE & ANALYZE</button>
+      </div>
+
+      <!-- RIGHT VIZ AREA -->
+      <div class="viz-area">
+        <div class="status">Select crop and soil type, then click "GENERATE CROP IMAGE & ANALYZE"</div>
+        
+        <!-- CROP IMAGE SECTION -->
+        <div class="crop-image-section">
+          <div class="crop-image-title">🌾 Live Crop Visualization</div>
+          <div id="imageContainer" class="image-loading">Waiting for input...</div>
+          
+          <!-- CROP STATUS INFO -->
+          <div class="crop-status-info">
+            <div class="crop-info-row">
+              <div class="crop-info-item">
+                <div class="crop-info-label">Soil Moisture</div>
+                <div class="crop-info-value" id="soilMoistureDisplay">—</div>
+              </div>
+              <div class="crop-info-item">
+                <div class="crop-info-label">Water Stress</div>
+                <div class="crop-info-value" id="stressDisplay">—</div>
+              </div>
+            </div>
+            <div class="crop-info-row">
+              <div class="crop-info-item">
+                <div class="crop-info-label">Next Irrigation</div>
+                <div class="crop-info-value" id="nextIrrigDisplay">—</div>
+              </div>
+              <div class="crop-info-item">
+                <div class="crop-info-label">Water Amount (mm)</div>
+                <div class="crop-info-value" id="waterAmountDisplay">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const soilProfiles = {
+      loam: { fc: 120, pwp: 40, name: 'Loam' },
+      clay: { fc: 180, pwp: 60, name: 'Clay' },
+      sandy: { fc: 60, pwp: 20, name: 'Sandy' },
+      silty: { fc: 140, pwp: 45, name: 'Silty' }
+    };
+
+    const cropData = {
+      rice: { kc: 1.1, stage: 'Mid-season', desc: 'Paddy rice field with water stress' },
+      wheat: { kc: 0.9, stage: 'Growing', desc: 'Wheat crop with soil condition' },
+      corn: { kc: 1.0, stage: 'Mid-season', desc: 'Corn maize field with irrigation need' },
+      sugarcane: { kc: 1.2, stage: 'Established', desc: 'Sugarcane plantation with water demand' },
+      cotton: { kc: 0.8, stage: 'Vegetative', desc: 'Cotton field with moisture stress' },
+      tomato: { kc: 0.6, stage: 'Flowering', desc: 'Tomato plant with water requirement' },
+      potato: { kc: 0.7, stage: 'Tuber-filling', desc: 'Potato crop with irrigation schedule' },
+      groundnut: { kc: 0.75, stage: 'Pod development', desc: 'Groundnut field with soil moisture' }
+    };
+
+    let currentSoilType = 'loam';
+
+    function initTheme() {
+      const isDark = localStorage.getItem('theme') === 'dark';
+      if (isDark) document.documentElement.classList.add('dark');
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+
+    document.querySelectorAll('.soil-profile').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.soil-profile').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+        currentSoilType = el.dataset.soil;
+      });
+    });
+
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    function generateCropPrompt(cropName, soilType, soilMoisture, stress, rainfall) {
+      const stressLevel = stress > 70 ? 'severely stressed' : stress > 40 ? 'moderately stressed' : 'healthy';
+      const rainfallStatus = rainfall < 10 ? 'dry conditions' : rainfall < 30 ? 'moderate rainfall' : 'good rainfall';
+      
+      return `High quality farm photography of ${cropName} crop field, ${stressLevel} plant appearance, ${soilType} soil visible, farmer field, natural lighting, professional agricultural image, photorealistic, detailed leaves and stems, showing crop health condition, ${rainfallStatus}, real farm setting`;
+    }
+
+    async function generateCropImage(cropName, soilType, soilMoisture, stress, rainfall) {
+      const container = document.getElementById('imageContainer');
+      container.innerHTML = '<div class="image-loading">🎨 Generating AI crop image...</div>';
+
+      try {
+        const prompt = generateCropPrompt(cropName, soilType, soilMoisture, stress, rainfall);
+        
+        // Use Replicate API for image generation (free tier available)
+        const response = await fetch('https://api.replicate.com/v1/predictions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token r8_nfVLPjvRJ6bxvqaQyXlFcB6rJ96dxKzDqJ8bm'
+          },
+          body: JSON.stringify({
+            version: 'db21e45d3f7023abc9e53f5312b0c5c21b760d2b67fb828bb68e57fcc9fce47d',
+            input: {
+              prompt: prompt,
+              num_inference_steps: 25,
+              guidance_scale: 7.5
+            }
+          })
+        });
+
+        if (!response.ok) {
+          // Fallback: Use Pexels API for crop images
+          await fetchPexelsImage(cropName);
+          return;
+        }
+
+        const prediction = await response.json();
+        
+        if (prediction.output && prediction.output[0]) {
+          const img = document.createElement('img');
+          img.id = 'cropImage';
+          img.src = prediction.output[0];
+          img.alt = cropName;
+          container.innerHTML = '';
+          container.appendChild(img);
+        } else {
+          await fetchPexelsImage(cropName);
+        }
+      } catch (error) {
+        console.log('Fallback to Pexels API...');
+        await fetchPexelsImage(cropName);
+      }
+    }
+
+    async function fetchPexelsImage(cropName) {
+      const container = document.getElementById('imageContainer');
+      try {
+        const response = await fetch(`https://api.pexels.com/v1/search?query=${cropName} farm field&per_page=1&orientation=landscape`, {
+          headers: {
+            'Authorization': 'YOUR_PEXELS_API_KEY'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.photos.length > 0) {
+            const img = document.createElement('img');
+            img.id = 'cropImage';
+            img.src = data.photos[0].src.large;
+            img.alt = cropName;
+            container.innerHTML = '';
+            container.appendChild(img);
+            return;
+          }
+        }
+
+        // Final fallback: placeholder
+        showPlaceholderImage(cropName);
+      } catch (error) {
+        showPlaceholderImage(cropName);
+      }
+    }
+
+    function showPlaceholderImage(cropName) {
+      const container = document.getElementById('imageContainer');
+      const canvas = document.createElement('canvas');
+      canvas.id = 'cropImage';
+      canvas.width = 800;
+      canvas.height = 450;
+      
+      const ctx = canvas.getContext('2d');
+      const gradient = ctx.createLinearGradient(0, 0, 800, 450);
+      gradient.addColorStop(0, '#7CB342');
+      gradient.addColorStop(0.5, '#9CCC65');
+      gradient.addColorStop(1, '#558B2F');
+      
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 800, 450);
+      
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 48px Poppins';
+      ctx.textAlign = 'center';
+      ctx.fillText(`🌾 ${cropName.toUpperCase()}`, 400, 200);
+      
+      ctx.font = '24px Poppins';
+      ctx.fillText('AI-Generated Farm Field', 400, 260);
+      ctx.fillText('Real-time Irrigation Analysis', 400, 310);
+      
+      container.innerHTML = '';
+      container.appendChild(canvas);
+    }
+
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const cropSelect = document.getElementById('cropSelect');
+      const cropName = cropSelect.options[cropSelect.selectedIndex].text.split(' ')[1];
+      const soilProfile = soilProfiles[currentSoilType];
+      const s0 = parseFloat(document.getElementById('s0').value);
+      const p_rain = parseFloat(document.getElementById('p_rain').value);
+      const et0 = parseFloat(document.getElementById('et0').value);
+      const crop = cropData[cropSelect.value];
+
+      // Calculate stress
+      const AW = soilProfile.fc - soilProfile.pwp;
+      const trigger = soilProfile.pwp + 0.4 * AW;
+      const stress = Math.max(0, Math.round(((trigger - s0) / (trigger - soilProfile.pwp)) * 100));
+
+      // Generate image
+      generateCropImage(
+        cropSelect.options[cropSelect.selectedIndex].text,
+        soilProfile.name,
+        s0,
+        stress,
+        p_rain
+      );
+
+      // Update status info
+      document.getElementById('soilMoistureDisplay').textContent = s0 + ' mm';
+      document.getElementById('stressDisplay').textContent = (stress > 0 ? stress + '%' : '0% ✓');
+      document.getElementById('nextIrrigDisplay').textContent = (stress > 50 ? 'Day 1' : stress > 30 ? 'Day 2-3' : 'Day 5+');
+      document.getElementById('waterAmountDisplay').textContent = (Math.max(0, trigger - s0)).toFixed(1) + ' mm';
+    });
+
+    // Auto-generate on crop selection change
+    document.getElementById('cropSelect').addEventListener('change', () => {
+      document.getElementById('generateBtn').click();
+    });
+
+    // Initial theme setup
+    initTheme();
+    document.getElementById('generateBtn').click();
+  </script>
+</body>
+</html>

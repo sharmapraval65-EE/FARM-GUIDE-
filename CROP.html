@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>🌾 CROP WATER STRESS SIMULATOR & FARM IRRIGATION SYSTEM</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #27ae60;
+      --primary-dark: #229954;
+      --secondary: #f39c12;
+      --accent: #e74c3c;
+      --success: #27ae60;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+      --dark: #2c3e50;
+      --darker: #1a252f;
+      --light: #ecf0f1;
+      --lighter: #f8f9fa;
+      --muted: #95a5a6;
+      --shadow: 0 10px 40px rgba(0,0,0,0.15);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.2);
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #2c3e50;
+    }
+
+    body.dark {
+      background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+      color: #ecf0f1;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      padding: 30px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+      color: white;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: -0.5px;
+    }
+
+    .header-subtitle {
+      display: block;
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.95;
+    }
+
+    .theme-toggle {
+      width: 50px;
+      height: 50px;
+      background: rgba(255,255,255,0.2);
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 24px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255,255,255,0.35);
+      transform: scale(1.08);
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 30px;
+      padding: 40px;
+      max-width: 1800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    body.dark .panel {
+      background: rgba(44,62,80,0.7);
+      color: #ecf0f1;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    body.dark .section {
+      border-bottom-color: rgba(255,255,255,0.08);
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #27ae60;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      background: linear-gradient(180deg, #27ae60 0%, #229954 100%);
+      border-radius: 2px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #2c3e50;
+    }
+
+    body.dark label {
+      color: #ecf0f1;
+    }
+
+    input[type=number],
+    input[type=text],
+    select {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 10px;
+      border: 2px solid #e0e6ed;
+      background: #f8f9fa;
+      color: #2c3e50;
+      font-size: 13px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      transition: var(--transition);
+      margin-bottom: 12px;
+    }
+
+    body.dark input,
+    body.dark select {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(39,174,96,0.3);
+      color: #ecf0f1;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #27ae60;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(39,174,96,0.15);
+    }
+
+    .help-text {
+      font-size: 11px;
+      color: #95a5a6;
+      margin-top: -8px;
+      margin-bottom: 12px;
+      font-weight: 400;
+    }
+
+    button {
+      border: none;
+      padding: 14px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      font-family: 'Poppins', sans-serif;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      color: white;
+      width: 100%;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(39,174,96,0.3);
+      margin-bottom: 10px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(39,174,96,0.4);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+      color: white;
+      width: 100%;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(243,156,18,0.3);
+    }
+
+    .info-card {
+      background: linear-gradient(135deg, rgba(39,174,96,0.1) 0%, rgba(243,156,18,0.05) 100%);
+      border: 2px solid rgba(39,174,96,0.2);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    body.dark .info-card {
+      background: linear-gradient(135deg, rgba(39,174,96,0.15) 0%, rgba(243,156,18,0.08) 100%);
+      border-color: rgba(39,174,96,0.3);
+    }
+
+    .info-card strong {
+      color: #27ae60;
+      font-size: 18px;
+      display: block;
+      margin: 8px 0;
+    }
+
+    .info-card .label {
+      font-size: 11px;
+      color: #95a5a6;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .soil-profile {
+      background: linear-gradient(135deg, rgba(52,152,219,0.08) 0%, rgba(46,204,113,0.08) 100%);
+      border: 1px solid rgba(52,152,219,0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .soil-profile:hover {
+      transform: translateX(4px);
+      box-shadow: 0 6px 18px rgba(39,174,96,0.2);
+    }
+
+    .soil-profile.active {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      color: white;
+      border-color: #27ae60;
+    }
+
+    .soil-profile-name {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .soil-profile-desc {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .viz-area {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .status {
+      padding: 20px 25px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(39,174,96,0.1) 0%, rgba(243,156,18,0.05) 100%);
+      border: 2px solid rgba(39,174,96,0.3);
+      color: #27ae60;
+      letter-spacing: 0.5px;
+    }
+
+    .status.loading {
+      animation: pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .irrigation-timeline {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      border-left: 6px solid #27ae60;
+    }
+
+    body.dark .irrigation-timeline {
+      background: rgba(44,62,80,0.7);
+    }
+
+    .timeline-header {
+      font-size: 16px;
+      font-weight: 800;
+      color: #27ae60;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .timeline-events {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .timeline-event {
+      display: flex;
+      gap: 20px;
+      padding: 18px;
+      background: linear-gradient(135deg, rgba(39,174,96,0.08) 0%, rgba(243,156,18,0.05) 100%);
+      border: 2px solid rgba(39,174,96,0.2);
+      border-radius: 12px;
+      transition: var(--transition);
+    }
+
+    body.dark .timeline-event {
+      background: linear-gradient(135deg, rgba(39,174,96,0.12) 0%, rgba(243,156,18,0.08) 100%);
+      border-color: rgba(39,174,96,0.3);
+    }
+
+    .timeline-event:hover {
+      transform: translateX(8px);
+      box-shadow: 0 6px 18px rgba(39,174,96,0.15);
+    }
+
+    .timeline-marker {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .timeline-marker-label {
+      font-size: 10px;
+      opacity: 0.85;
+    }
+
+    .timeline-marker-day {
+      font-size: 24px;
+    }
+
+    .timeline-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .timeline-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: #27ae60;
+      margin-bottom: 6px;
+    }
+
+    .timeline-text {
+      font-size: 13px;
+      color: #2c3e50;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+
+    body.dark .timeline-text {
+      color: #ecf0f1;
+    }
+
+    .timeline-amount {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f39c12;
+      background: rgba(243,156,18,0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    .timeline-status {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    body.dark .timeline-status {
+      border-top-color: rgba(255,255,255,0.08);
+    }
+
+    .timeline-status.water-needed { color: #e74c3c; }
+
+    .viz-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    body.dark .viz-card {
+      background: rgba(44,62,80,0.7);
+    }
+
+    #chart, #stressChart {
+      width: 100%;
+      height: 450px;
+    }
+
+    .table-panel {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+
+    body.dark .table-panel {
+      background: rgba(44,62,80,0.7);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      padding: 16px;
+      text-align: left;
+      font-weight: 700;
+      background: linear-gradient(135deg, rgba(39,174,96,0.1) 0%, rgba(243,156,18,0.05) 100%);
+      color: #27ae60;
+      border-bottom: 2px solid rgba(39,174,96,0.2);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      color: #2c3e50;
+    }
+
+    body.dark td {
+      border-bottom-color: rgba(255,255,255,0.05);
+      color: #ecf0f1;
+    }
+
+    tr:hover {
+      background: rgba(39,174,96,0.05);
+    }
+
+    body.dark tr:hover {
+      background: rgba(39,174,96,0.1);
+    }
+
+    .irrig-amount {
+      font-weight: 700;
+      color: #27ae60;
+      font-size: 14px;
+    }
+
+    .soil-status {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .soil-good { background: rgba(39,174,96,0.2); color: #27ae60; }
+    .soil-warning { background: rgba(243,156,18,0.2); color: #f39c12; }
+    .soil-danger { background: rgba(231,76,60,0.2); color: #e74c3c; }
+
+    @media (max-width: 1400px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+      }
+      .header h1 {
+        font-size: 24px;
+      }
+      .container {
+        padding: 20px;
+        gap: 15px;
+      }
+      .panel {
+        padding: 20px;
+      }
+      .timeline-event {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="logo-section">
+        <div class="logo-icon">🌾</div>
+        <div>
+          <h1>Farm Irrigation Guide</h1>
+          <span class="header-subtitle">Crop Water Stress Simulator & Irrigation System</span>
+        </div>
+      </div>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+
+    <div class="container">
+      <div class="panel">
+        <div class="section">
+          <div class="section-title">Select Your Crop</div>
+          <select id="cropSelect">
+            <option value="rice">🌾 Rice</option>
+            <option value="wheat">🌾 Wheat</option>
+            <option value="corn">🌽 Corn (Maize)</option>
+            <option value="sugarcane">🌱 Sugarcane</option>
+            <option value="cotton">⚪ Cotton</option>
+            <option value="tomato">🍅 Tomato</option>
+            <option value="potato">🥔 Potato</option>
+            <option value="groundnut">🥜 Groundnut</option>
+          </select>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Your Soil Type</div>
+          <div class="soil-profile active" data-soil="loam">
+            <div class="soil-profile-name">🔵 Loam (Balanced)</div>
+            <div class="soil-profile-desc">Good water retention & drainage</div>
+          </div>
+          <div class="soil-profile" data-soil="clay">
+            <div class="soil-profile-name">🟤 Clay</div>
+            <div class="soil-profile-desc">High water retention, slow drainage</div>
+          </div>
+          <div class="soil-profile" data-soil="sandy">
+            <div class="soil-profile-name">🟡 Sandy</div>
+            <div class="soil-profile-desc">Low water retention, fast drainage</div>
+          </div>
+          <div class="soil-profile" data-soil="silty">
+            <div class="soil-profile-name">🟢 Silty</div>
+            <div class="soil-profile-desc">Moderate retention & drainage</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Current Soil Moisture</div>
+          <label>Soil Water (mm)</label>
+          <input id="s0" type="number" value="100" />
+          <p class="help-text">Estimate using soil feel or moisture meter</p>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Expected Weather (Next 7 Days)</div>
+          <label>Rainfall Chance (%)</label>
+          <input id="p_rain" type="number" min="0" max="100" value="30" />
+          <label>Expected Daily Evaporation (mm)</label>
+          <input id="et0" type="number" step="0.1" value="4" />
+          <p class="help-text">Based on temperature, humidity, wind</p>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Planning Horizon</div>
+          <label>How many days to plan? (days)</label>
+          <input id="horizon" type="number" min="3" max="30" value="14" />
+          <p class="help-text">Typical planning window: 7-14 days</p>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <button class="btn-primary" id="startBtn">🚀 ANALYZE MY FIELD</button>
+          <button class="btn-secondary" id="downloadCSV" style="margin-top: 10px;">📥 DOWNLOAD PLAN</button>
+        </div>
+
+        <div class="info-card" style="margin-top: 30px;">
+          <div class="label">Suggested Daily Water Need</div>
+          <strong id="quickETc">4.0 mm</strong>
+          <div class="label" style="margin-top: 8px;">Based on Crop Stage</div>
+        </div>
+      </div>
+
+      <div class="viz-area">
+        <div class="status">Ready to help. Select your crop and soil, then click "ANALYZE MY FIELD"</div>
+        
+        <div class="irrigation-timeline">
+          <div class="timeline-header">⏰ When to Irrigate (Irrigation Schedule)</div>
+          <div class="timeline-events" id="timelineEvents">
+            <div style="text-align: center; color: #95a5a6; padding: 30px; font-size: 13px;">
+              Run analysis to see irrigation schedule...
+            </div>
+          </div>
+        </div>
+
+        <div class="viz-card">
+          <div id="chart"></div>
+        </div>
+
+        <div class="viz-card">
+          <div id="stressChart"></div>
+        </div>
+
+        <div class="table-panel">
+          <table id="schedule_table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Rainfall</th>
+                <th>Water Needed</th>
+                <th>Irrigation</th>
+                <th>Soil Moisture</th>
+                <th>Stress Level</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const soilProfiles = {
+      loam: { fc: 120, pwp: 40, name: 'Loam' },
+      clay: { fc: 180, pwp: 60, name: 'Clay' },
+      sandy: { fc: 60, pwp: 20, name: 'Sandy' },
+      silty: { fc: 140, pwp: 45, name: 'Silty' }
+    };
+
+    const cropData = {
+      rice: { kc: 1.1, stage: 'Mid-season' },
+      wheat: { kc: 0.9, stage: 'Growing' },
+      corn: { kc: 1.0, stage: 'Mid-season' },
+      sugarcane: { kc: 1.2, stage: 'Established' },
+      cotton: { kc: 0.8, stage: 'Vegetative' },
+      tomato: { kc: 0.6, stage: 'Flowering' },
+      potato: { kc: 0.7, stage: 'Tuber-filling' },
+      groundnut: { kc: 0.75, stage: 'Pod development' }
+    };
+
+    let currentSoilType = 'loam';
+
+    function initTheme() {
+      const isDark = localStorage.getItem('theme') === 'dark';
+      if (isDark) document.documentElement.classList.add('dark');
+      updateThemeToggle();
+    }
+
+    function updateThemeToggle() {
+      const isDark = document.documentElement.classList.contains('dark');
+      document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateThemeToggle();
+    });
+
+    document.querySelectorAll('.soil-profile').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.soil-profile').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+        currentSoilType = el.dataset.soil;
+      });
+    });
+
+    document.getElementById('cropSelect').addEventListener('change', (e) => {
+      const crop = cropData[e.target.value];
+      document.getElementById('quickETc').textContent = (crop.kc * 4).toFixed(1) + ' mm';
+    });
+
+    function randUniform(a, b) { return a + Math.random() * (b - a); }
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    function generateSynthetic(days, p_rain, et0_mean) {
+      const rain = [], et0 = [];
+      p_rain = p_rain / 100;
+      for (let i = 0; i < days; i++) {
+        rain.push(Math.random() < p_rain ? parseFloat(randUniform(5, 20).toFixed(1)) : 0);
+        et0.push(parseFloat((et0_mean + randUniform(-0.5, 0.5)).toFixed(2)));
+      }
+      return { rain, et0 };
+    }
+
+    function simulate(params, weather) {
+      const days = params.horizon;
+      const fc = params.fc, pwp = params.pwp;
+      let S = params.s0;
+      const AW = Math.max(0, fc - pwp);
+      const trigger = pwp + 0.4 * AW;
+      const out = { day: [], rain: [], etcrop: [], irrig: [], S: [], action: [], stress: [] };
+      let cumI = 0, stressDays = 0;
+      
+      for (let t = 0; t < days; t++) {
+        const P = weather.rain[t] || 0;
+        const ETc = (weather.et0[t] || params.et0_mean) * params.kc;
+        let I = 0, action = '✓ Monitor', stressLevel = 0;
+
+        const projected = clamp(S + P - ETc, 0, fc);
+        
+        if (projected < pwp) {
+          stressLevel = 100;
+          action = '🔴 CRITICAL';
+        } else if (projected < trigger) {
+          stressLevel = Math.round(((trigger - projected) / (trigger - pwp)) * 80);
+          action = '💧 IRRIGATE';
+          I = Math.max(0, trigger - (S + P));
+        } else if (projected > fc * 0.85) {
+          stressLevel = 0;
+          action = '⚠️ Watch excess';
+        } else {
+          stressLevel = 0;
+          action = '✓ Optimal';
+        }
+        
+        const applied = I * 0.9;
+        let S_new = clamp(S + applied + P - ETc, 0, fc);
+        out.day.push(t + 1);
+        out.rain.push(parseFloat(P.toFixed(1)));
+        out.etcrop.push(parseFloat(ETc.toFixed(1)));
+        out.irrig.push(parseFloat(I.toFixed(1)));
+        out.S.push(parseFloat(S_new.toFixed(1)));
+        out.action.push(action);
+        out.stress.push(stressLevel);
+        if (S_new < trigger) stressDays++;
+        S = S_new;
+        cumI += I;
+      }
+      return { out, cumI: parseFloat(cumI.toFixed(1)), stressDays, trigger, AW, fc, pwp };
+    }
+
+    function drawPlot(sim) {
+      const r = sim.out;
+      const days = r.day.map(d => 'Day ' + d);
+      const traceRain = { x: days, y: r.rain, name: 'Rain', type: 'bar', marker: { color: '#3498db' } };
+      const traceIrr = { x: days, y: r.irrig, name: 'Irrigation Needed', type: 'bar', marker: { color: '#f39c12' } };
+      const traceET = { x: days, y: r.etcrop, name: 'Water Demand (ETc)', type: 'scatter', mode: 'lines+markers', line: { color: '#e74c3c', width: 3 } };
+      const traceS = { x: days, y: r.S, name: 'Soil Moisture', yaxis: 'y2', type: 'scatter', mode: 'lines+markers', line: { color: '#27ae60', width: 3 } };
+      const layout = {
+        title: { text: 'Water Budget: Rain, Demand & Soil Moisture', font: { size: 16, family: 'Poppins', color: '#2c3e50' } },
+        barmode: 'overlay',
+        xaxis: { title: 'Day' },
+        yaxis: { title: 'Water Depth (mm)' },
+        yaxis2: { title: 'Soil Moisture (mm)', overlaying: 'y', side: 'right' },
+        legend: { orientation: 'h', x: 0.1, y: -0.18 },
+        margin: { t: 50, l: 60, r: 60, b: 80 },
+        hovermode: 'x unified',
+        font: { family: 'Poppins', size: 12 }
+      };
+      Plotly.newPlot('chart', [traceRain, traceIrr, traceET, traceS], layout, { responsive: true, displayModeBar: false });
+    }
+
+    function drawStressChart(sim) {
+      const r = sim.out;
+      const days = r.day.map(d => 'Day ' + d);
+      
+      const traceStress = {
+        x: days,
+        y: r.stress,
+        name: 'Crop Water Stress',
+        type: 'scatter',
+        mode: 'lines+markers',
+        line: { color: '#e74c3c', width: 4 },
+        marker: { size: 8, color: r.stress.map(s => s === 0 ? '#27ae60' : s < 50 ? '#f39c12' : '#e74c3c') },
+        fill: 'tozeroy',
+        fillcolor: 'rgba(231,76,60,0.2)'
+      };
+
+      const traceRain = {
+        x: days,
+        y: r.rain,
+        name: 'Rainfall',
+        type: 'bar',
+        marker: { color: '#3498db' },
+        opacity: 0.5
+      };
+
+      const traceIrrig = {
+        x: days,
+        y: r.irrig,
+        name: 'Irrigation Applied',
+        type: 'bar',
+        marker: { color: '#27ae60' },
+        opacity: 0.6
+      };
+
+      const layout = {
+        title: { text: '🌾 CROP WATER STRESS vs RAINFALL & IRRIGATION', font: { size: 16, family: 'Poppins', color: '#2c3e50', weight: 'bold' } },
+        xaxis: { title: 'Day', gridcolor: '#e0e0e0' },
+        yaxis: { title: 'Stress Level (%) / Water (mm)', gridcolor: '#e0e0e0' },
+        barmode: 'overlay',
+        hovermode: 'x unified',
+        legend: { orientation: 'h', x: 0.1, y: -0.18 },
+        margin: { t: 60, l: 60, r: 60, b: 100 },
+        plot_bgcolor: 'rgba(245,247,250,0.5)',
+        font: { family: 'Poppins', size: 12, color: '#2c3e50' },
+        annotations: [
+          { x: 0.02, y: -0.35, text: '✓ No Stress = 0% | ⚠️ Moderate Stress = 50% | 🔴 Severe Stress = 100%', showarrow: false, xref: 'paper', yref: 'paper', font: { size: 11, color: '#95a5a6' } }
+        ]
+      };
+
+      Plotly.newPlot('stressChart', [traceStress, traceRain, traceIrrig], layout, { responsive: true, displayModeBar: false });
+    }
+
+    function updateTimeline(sim) {
+      const r = sim.out;
+      const events = [];
+      
+      for (let i = 0; i < r.day.length; i++) {
+        if (r.irrig[i] > 0) {
+          events.push({
+            day: r.day[i],
+            amount: r.irrig[i],
+            needReason: 'Soil moisture dropping below threshold'
+          });
+        }
+      }
+
+      const timelineContainer = document.getElementById('timelineEvents');
+      
+      if (events.length === 0) {
+        timelineContainer.innerHTML = '<div style="text-align: center; color: #27ae60; padding: 30px; font-size: 13px; font-weight: 600;">✅ NO IRRIGATION NEEDED — RAINFALL IS SUFFICIENT & NO WATER STRESS</div>';
+        return;
+      }
+
+      const html = events.map((evt) => {
+        const daysFromNow = evt.day;
+        const daysText = daysFromNow === 1 ? 'Tomorrow' : `After ${daysFromNow - 1} day${daysFromNow - 1 !== 1 ? 's' : ''}`;
+        return `
+          <div class="timeline-event">
+            <div class="timeline-marker">
+              <div class="timeline-marker-label">Day</div>
+              <div class="timeline-marker-day">${evt.day}</div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">🌾 ${daysText}</div>
+              <div class="timeline-text"><strong>Apply water: ${evt.amount.toFixed(1)} mm</strong></div>
+              <div class="timeline-text" style="font-size: 12px; color: #95a5a6;">${evt.needReason}</div>
+              <div class="timeline-amount">💧 ${evt.amount.toFixed(1)} Millimeters</div>
+              <div class="timeline-status water-needed">⚠️ Action Required</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      timelineContainer.innerHTML = html;
+    }
+
+    function updateTable(sim) {
+      const tbody = document.querySelector('#schedule_table tbody');
+      tbody.innerHTML = '';
+      const r = sim.out;
+      for (let i = 0; i < r.day.length; i++) {
+        const statusClass = r.irrig[i] > 5 ? 'soil-danger' : r.S[i] < sim.trigger ? 'soil-warning' : 'soil-good';
+        
+        let stressLabel = '✓ No Stress';
+        let stressColor = 'soil-good';
+        if (r.stress[i] > 70) {
+          stressLabel = '🔴 Severe';
+          stressColor = 'soil-danger';
+        } else if (r.stress[i] > 40) {
+          stressLabel = '⚠️ Moderate';
+          stressColor = 'soil-warning';
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><strong>${r.day[i]}</strong></td><td>${r.rain[i]} mm</td><td><strong>${r.etcrop[i]} mm</strong></td><td><strong class="irrig-amount">${r.irrig[i] > 0 ? r.irrig[i] + ' mm' : '—'}</strong></td><td><span class="soil-status ${statusClass}">${r.S[i]} mm</span></td><td><span class="soil-status ${stressColor}">${stressLabel}</span></td><td>${r.action[i]}</td>`;
+        tbody.appendChild(tr);
+      }
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+      const status = document.querySelector('.status');
+      status.textContent = '⏳ Analyzing your field...';
+      status.classList.add('loading');
+
+      setTimeout(() => {
+        const soilProfile = soilProfiles[currentSoilType];
+        const crop = cropData[document.getElementById('cropSelect').value];
+        const p = {
+          horizon: parseInt(document.getElementById('horizon').value, 10),
+          fc: soilProfile.fc,
+          pwp: soilProfile.pwp,
+          s0: parseFloat(document.getElementById('s0').value),
+          kc: crop.kc,
+          et0_mean: parseFloat(document.getElementById('et0').value),
+          p_rain: parseFloat(document.getElementById('p_rain').value)
+        };
+
+        const weather = generateSynthetic(p.horizon, p.p_rain, p.et0_mean);
+        const sim = simulate(p, weather);
+        sim.fc = p.fc;
+        window._lastSim = sim;
+        window._lastWeather = weather;
+
+        drawPlot(sim);
+        drawStressChart(sim);
+        updateTimeline(sim);
+        updateTable(sim);
+
+        status.classList.remove('loading');
+        status.textContent = '✅ Analysis complete. Review stress chart & irrigation timeline above.';
+      }, 300);
+    });
+
+    document.getElementById('downloadCSV').addEventListener('click', () => {
+      if (!window._lastSim) { alert('Run analysis first'); return; }
+      const r = window._lastSim.out;
+      const hdr = ['Day', 'Rain_mm', 'Water_Demand_mm', 'Irrigation_Needed_mm', 'Soil_Moisture_mm', 'Stress_Level_%', 'Action'];
+      const rows = [hdr.join(',')];
+      for (let i = 0; i < r.day.length; i++) {
+        rows.push([r.day[i], r.rain[i], r.etcrop[i], r.irrig[i], r.S[i], r.stress[i], r.action[i]].join(','));
+      }
+      const csv = rows.join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'irrigation_plan_with_stress.csv';
+      link.click();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+    });
+  </script>
+</body>
+</html>

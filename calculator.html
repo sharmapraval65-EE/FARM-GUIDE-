@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Calculator - GreenGuard AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="logo-icon">🌿</span>
+                <h2>GreenGuard AI</h2>
+            </div>
+            <div class="nav-links">
+                <a href="landing.html" data-en="Home" data-hi="होम">Home</a>
+                <a href="index.html" data-en="Simulator" data-hi="सिमुलेटर">Simulator</a>
+                <a href="dashboard.html" data-en="Dashboard" data-hi="डैशबोर्ड">Dashboard</a>
+                <a href="CROP.html" data-en="Crop Info" data-hi="फसल जानकारी">Crop Info</a>
+                <a href="calculator.html" class="active" data-en="Calculator" data-hi="कैलकुलेटर">Calculator</a>
+            </div>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en" onclick="switchLanguage('en')">EN</button>
+                <button class="lang-btn" data-lang="hi" onclick="switchLanguage('hi')">HI</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding: 2rem 1rem; max-width: 900px;">
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">💧 Irrigation Water Calculator</h1>
+            <p style="color: #666; font-size: 1.1rem;">Calculate optimal water requirements for your crops</p>
+        </div>
+
+        <!-- Calculator Form -->
+        <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+            <h2 style="margin-bottom: 1.5rem; color: #10B981;">📋 Enter Farm Details</h2>
+
+            <form id="calculatorForm">
+                <!-- Row 1: Crop & Growth Stage -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <label for="crop">Crop Type</label>
+                        <select id="crop" required onchange="updateCropInfo()">
+                            <option value="">Select a crop...</option>
+                            <option value="wheat">Wheat (Triticum aestivum)</option>
+                            <option value="rice">Rice (Oryza sativa)</option>
+                            <option value="maize">Maize/Corn (Zea mays)</option>
+                            <option value="cotton">Cotton (Gossypium)</option>
+                            <option value="sugarcane">Sugarcane (Saccharum)</option>
+                            <option value="potato">Potato (Solanum tuberosum)</option>
+                            <option value="tomato">Tomato (Solanum lycopersicum)</option>
+                            <option value="onion">Onion (Allium cepa)</option>
+                            <option value="groundnut">Groundnut (Arachis hypogaea)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="growthStage">Growth Stage</label>
+                        <select id="growthStage" required>
+                            <option value="">Select growth stage...</option>
+                            <option value="initial">Initial Stage (Kc: 0.3-0.4)</option>
+                            <option value="development">Development Stage (Kc: 0.7-0.8)</option>
+                            <option value="midseason">Mid-Season Stage (Kc: 1.0-1.15)</option>
+                            <option value="late">Late Season (Kc: 0.7-0.85)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 2: Area & Rainfall -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <label for="area">Farm Area (Hectares)</label>
+                        <input type="number" id="area" placeholder="e.g., 5" min="0.1" step="0.1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rainfall">Monthly Rainfall (mm)</label>
+                        <input type="number" id="rainfall" placeholder="e.g., 50" min="0" required>
+                    </div>
+                </div>
+
+                <!-- Row 3: Soil & Temperature -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <label for="soilType">Soil Type</label>
+                        <select id="soilType" required>
+                            <option value="sand">Sandy Soil (WHC: 50-75 mm/m)</option>
+                            <option value="loam">Loam Soil (WHC: 100-150 mm/m)</option>
+                            <option value="clay">Clay Soil (WHC: 150-200 mm/m)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="avgTemp">Average Temperature (°C)</label>
+                        <input type="number" id="avgTemp" placeholder="e.g., 28" min="0" max="50" required>
+                    </div>
+                </div>
+
+                <!-- Row 4: Irrigation Method -->
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label for="irrigationMethod">Irrigation Method</label>
+                    <select id="irrigationMethod" required>
+                        <option value="flood">Flood Irrigation (Efficiency: 60-70%)</option>
+                        <option value="sprinkler">Sprinkler Irrigation (Efficiency: 75-85%)</option>
+                        <option value="drip">Drip Irrigation (Efficiency: 90-95%)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-hero" style="width: 100%; padding: 1rem;">
+                    📊 Calculate Water Requirement
+                </button>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" style="display: none;">
+            <div class="card" style="padding: 2rem; margin-bottom: 2rem; background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 2px solid #10B981;">
+                <h2 style="margin-bottom: 2rem; color: #047857; text-align: center;">📈 Water Requirement Results</h2>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div style="background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #10B981;">
+                        <p style="color: #666; margin-bottom: 0.5rem; font-size: 0.9rem;">Reference ET₀</p>
+                        <p style="font-size: 1.8rem; font-weight: 700; color: #10B981;"><span id="et0Result">-</span> mm/month</p>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #3B82F6;">
+                        <p style="color: #666; margin-bottom: 0.5rem; font-size: 0.9rem;">Crop Water Requirement (ETc)</p>
+                        <p style="font-size: 1.8rem; font-weight: 700; color: #3B82F6;"><span id="etcResult">-</span> mm/month</p>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #F59E0B;">
+                        <p style="color: #666; margin-bottom: 0.5rem; font-size: 0.9rem;">Net Irrigation Requirement</p>
+                        <p style="font-size: 1.8rem; font-weight: 700; color: #F59E0B;"><span id="nirResult">-</span> mm/month</p>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #EF4444;">
+                        <p style="color: #666; margin-bottom: 0.5rem; font-size: 0.9rem;">Gross Irrigation Requirement</p>
+                        <p style="font-size: 1.8rem; font-weight: 700; color: #EF4444;"><span id="girResult">-</span> mm/month</p>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #8B5CF6;">
+                        <p style="color: #666; margin-bottom: 0.5rem; font-size: 0.9rem;">Total Water Required</p>
+                        <p style="font-size: 1.8rem; font-weight: 700; color: #8B5CF6;"><span id="totalWaterResult">-</span> Liters</p>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #10B981;">
+                        <p style="color: #666; margin-bottom: 0.5rem; font-size: 0.9rem;">Water Cost Estimate</p>
+                        <p style="font-size: 1.8rem; font-weight: 700; color: #10B981;">₹<span id="costResult">-</span></p>
+                    </div>
+                </div>
+
+                <!-- Irrigation Schedule Table -->
+                <div style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: #047857;">📅 Recommended Irrigation Schedule</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #10B981; color: white;">
+                                <th style="padding: 0.75rem; text-align: left; border-radius: 4px 0 0 0;">Week</th>
+                                <th style="padding: 0.75rem; text-align: left;">Days Interval</th>
+                                <th style="padding: 0.75rem; text-align: left;">Water per Irrigation (mm)</th>
+                                <th style="padding: 0.75rem; text-align: left; border-radius: 0 4px 0 0;">Total per Hectare (Liters)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTable">
+                            <tr style="background: #f5f5f5;">
+                                <td colspan="4" style="padding: 1rem; text-align: center;">Click Calculate to generate schedule</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 2rem;" onclick="downloadReport()">
+                    📥 Download Report
+                </button>
+            </div>
+        </div>
+
+        <!-- Information Section -->
+        <div class="card" style="padding: 2rem; background: #FEF3C7; border-left: 4px solid #F59E0B;">
+            <h3 style="color: #92400E; margin-bottom: 1rem;">💡 How It Works</h3>
+            <div style="color: #92400E; line-height: 1.8;">
+                <p><strong>Reference Evapotranspiration (ET₀):</strong> The water lost from a reference crop due to evaporation and plant transpiration. Depends on temperature, humidity, and wind speed.</p>
+                <p style="margin-top: 1rem;"><strong>Crop Water Requirement (ETc):</strong> Calculated as ETc = ET₀ × Kc, where Kc is the crop coefficient that varies by growth stage.</p>
+                <p style="margin-top: 1rem;"><strong>Net Irrigation Requirement (NIR):</strong> ETc minus rainfall and soil moisture contribution.</p>
+                <p style="margin-top: 1rem;"><strong>Gross Irrigation Requirement (GIR):</strong> NIR divided by irrigation efficiency to account for losses in the system.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Chatbot -->
+    <div id="chatbot" class="chatbot">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <span style="font-size: 1.5rem;">👨‍🌾</span>
+                <div>
+                    <h4>Krishi Sahayak</h4>
+                    <p>AI Farming Assistant</p>
+                </div>
+            </div>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+        </div>
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="chat-message assistant">
+                <p>🙏 Namaste! I am Krishi Sahayak. Have questions about water calculation? Ask me!</p>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatbot-input" placeholder="Ask me anything..." onkeypress="handleChatInput(event)">
+            <button onclick="sendChatMessage()">Send</button>
+        </div>
+    </div>
+
+    <button class="chatbot-toggle" onclick="toggleChatbot()">🌾</button>
+
+    <script src="script.js"></script>
+    <script>
+        // Calculator functionality
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateWaterRequirement();
+        });
+
+        function updateCropInfo() {
+            const crop = document.getElementById('crop').value;
+            // You can add crop-specific information here
+        }
+
+        function calculateWaterRequirement() {
+            // Get form values
+            const crop = document.getElementById('crop').value;
+            const growthStage = document.getElementById('growthStage').value;
+            const area = parseFloat(document.getElementById('area').value);
+            const rainfall = parseFloat(document.getElementById('rainfall').value);
+            const soilType = document.getElementById('soilType').value;
+            const avgTemp = parseFloat(document.getElementById('avgTemp').value);
+            const irrigationMethod = document.getElementById('irrigationMethod').value;
+
+            // Get Kc based on growth stage
+            let kc = 0.5;
+            if (growthStage === 'initial') kc = 0.35;
+            else if (growthStage === 'development') kc = 0.75;
+            else if (growthStage === 'midseason') kc = 1.05;
+            else if (growthStage === 'late') kc = 0.80;
+
+            // Calculate ET₀ (simplified Thornthwaite method)
+            const et0 = avgTemp * 0.51; // Simplified calculation
+            
+            // Calculate ETc
+            const etc = et0 * kc;
+
+            // Calculate NIR (Net Irrigation Requirement)
+            const nir = Math.max(0, etc - rainfall);
+
+            // Get irrigation efficiency
+            let efficiency = 0.65; // Default: flood
+            if (irrigationMethod === 'sprinkler') efficiency = 0.80;
+            else if (irrigationMethod === 'drip') efficiency = 0.92;
+
+            // Calculate GIR (Gross Irrigation Requirement)
+            const gir = nir / efficiency;
+
+            // Calculate total water required (mm to Liters)
+            // 1 mm on 1 hectare = 10,000 liters
+            const totalWater = gir * area * 10000;
+
+            // Calculate cost (approximately ₹0.5 per 1000 liters)
+            const waterCost = totalWater * 0.5 / 1000;
+
+            // Display results
+            document.getElementById('et0Result').textContent = et0.toFixed(1);
+            document.getElementById('etcResult').textContent = etc.toFixed(1);
+            document.getElementById('nirResult').textContent = nir.toFixed(1);
+            document.getElementById('girResult').textContent = gir.toFixed(1);
+            document.getElementById('totalWaterResult').textContent = totalWater.toFixed(0);
+            document.getElementById('costResult').textContent = waterCost.toFixed(0);
+
+            // Generate irrigation schedule
+            generateSchedule(gir);
+
+            // Show results
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateSchedule(girValue) {
+            const scheduleBody = document.getElementById('scheduleTable');
+            scheduleBody.innerHTML = '';
+
+            const weeks = [
+                { week: '1-2', interval: 5, percentage: 0.15 },
+                { week: '3-4', interval: 4, percentage: 0.25 },
+                { week: '5-6', interval: 3, percentage: 0.35 },
+                { week: '7-8', interval: 5, percentage: 0.25 }
+            ];
+
+            weeks.forEach(w => {
+                const waterPerIrrigation = (girValue * w.percentage).toFixed(1);
+                const waterPerHectare = (waterPerIrrigation * 10000).toFixed(0);
+
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #ddd';
+                row.innerHTML = `
+                    <td style="padding: 0.75rem;">${w.week}</td>
+                    <td style="padding: 0.75rem;">${w.interval} days</td>
+                    <td style="padding: 0.75rem;">${waterPerIrrigation} mm</td>
+                    <td style="padding: 0.75rem;">${waterPerHectare} L</td>
+                `;
+                scheduleBody.appendChild(row);
+            });
+        }
+
+        function downloadReport() {
+            alert('📥 Report download feature coming soon!\nIn production, this would generate a PDF with detailed calculations.');
+        }
+    </script>
+</body>
+</html>

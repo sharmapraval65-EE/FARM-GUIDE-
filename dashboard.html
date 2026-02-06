@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GreenGuard AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="logo-icon">🌿</span>
+                <h2>GreenGuard AI</h2>
+            </div>
+            <div class="nav-links">
+                <a href="landing.html" data-en="Home" data-hi="होम">Home</a>
+                <a href="index.html" data-en="Simulator" data-hi="सिमुलेटर">Simulator</a>
+                <a href="dashboard.html" class="active" data-en="Dashboard" data-hi="डैशबोर्ड">Dashboard</a>
+                <a href="CROP.html" data-en="Crop Info" data-hi="फसल जानकारी">Crop Info</a>
+                <a href="calculator.html" data-en="Calculator" data-hi="कैलकुलेटर">Calculator</a>
+            </div>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en" onclick="switchLanguage('en')">EN</button>
+                <button class="lang-btn" data-lang="hi" onclick="switchLanguage('hi')">HI</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item active">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="calculator.html" class="menu-item">
+                    <span>💧</span> Water Calculator
+                </a>
+                <a href="CROP.html" class="menu-item">
+                    <span>🌱</span> Crop Management
+                </a>
+                <a href="MANVENDRA..html" class="menu-item">
+                    <span>📈</span> Analytics
+                </a>
+                <a href="index.html" class="menu-item">
+                    <span>🔬</span> Simulator
+                </a>
+                <a href="landing.html" class="menu-item">
+                    <span>🌾</span> Home
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Monitor your farm in real-time</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">📱 Add Field</button>
+                    <button class="btn btn-secondary">⚙️ Settings</button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="dashboard-stats">
+                <div class="stat-widget">
+                    <div class="stat-header">
+                        <h3>Soil Moisture</h3>
+                        <span class="badge badge-success">Optimal</span>
+                    </div>
+                    <div class="stat-value-large">42%</div>
+                    <div class="stat-bar">
+                        <div class="stat-bar-fill" style="width: 42%"></div>
+                    </div>
+                    <p class="stat-detail">Ideal range: 30-50%</p>
+                </div>
+
+                <div class="stat-widget">
+                    <div class="stat-header">
+                        <h3>Crop Health</h3>
+                        <span class="badge badge-success">Excellent</span>
+                    </div>
+                    <div class="stat-value-large">88/100</div>
+                    <div class="stat-bar">
+                        <div class="stat-bar-fill" style="width: 88%"></div>
+                    </div>
+                    <p class="stat-detail">Overall plant condition</p>
+                </div>
+
+                <div class="stat-widget">
+                    <div class="stat-header">
+                        <h3>Temperature</h3>
+                        <span class="badge badge-info">Normal</span>
+                    </div>
+                    <div class="stat-value-large">28°C</div>
+                    <div class="stat-bar">
+                        <div class="stat-bar-fill" style="width: 60%; background: #f39c12;"></div>
+                    </div>
+                    <p class="stat-detail">Optimal: 20-30°C</p>
+                </div>
+
+                <div class="stat-widget">
+                    <div class="stat-header">
+                        <h3>Water Saved</h3>
+                        <span class="badge badge-success">+40%</span>
+                    </div>
+                    <div class="stat-value-large">2,400 L</div>
+                    <div class="stat-bar">
+                        <div class="stat-bar-fill" style="width: 40%; background: #3498db;"></div>
+                    </div>
+                    <p class="stat-detail">This month</p>
+                </div>
+            </div>
+
+            <!-- Sections -->
+            <div class="dashboard-sections">
+                <!-- Crop Information -->
+                <section class="dashboard-card">
+                    <h2>🌾 Current Crops</h2>
+                    <div class="crop-grid">
+                        <div class="crop-item">
+                            <div class="crop-icon">🌾</div>
+                            <h4>Wheat</h4>
+                            <p class="crop-stage">Growth Stage: Development</p>
+                            <button class="btn btn-small" onclick="viewCropDetails('wheat')">View Details</button>
+                        </div>
+
+                        <div class="crop-item">
+                            <div class="crop-icon">🍅</div>
+                            <h4>Tomato</h4>
+                            <p class="crop-stage">Growth Stage: Flowering</p>
+                            <button class="btn btn-small" onclick="viewCropDetails('tomato')">View Details</button>
+                        </div>
+
+                        <div class="crop-item">
+                            <div class="crop-icon">🌽</div>
+                            <h4>Corn</h4>
+                            <p class="crop-stage">Growth Stage: Vegetative</p>
+                            <button class="btn btn-small" onclick="viewCropDetails('corn')">View Details</button>
+                        </div>
+
+                        <div class="crop-item">
+                            <div class="crop-icon">🥔</div>
+                            <h4>Potato</h4>
+                            <p class="crop-stage">Growth Stage: Tuber Initiation</p>
+                            <button class="btn btn-small" onclick="viewCropDetails('potato')">View Details</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Next Irrigation Schedule -->
+                <section class="dashboard-card">
+                    <h2>💧 Irrigation Schedule</h2>
+                    <div class="schedule-list">
+                        <div class="schedule-item">
+                            <div class="schedule-info">
+                                <h4>Wheat Field</h4>
+                                <p>Next irrigation: 6 hours</p>
+                            </div>
+                            <span class="badge badge-warning">AI Scheduled</span>
+                        </div>
+
+                        <div class="schedule-item">
+                            <div class="schedule-info">
+                                <h4>Tomato Field</h4>
+                                <p>Next irrigation: 2 days</p>
+                            </div>
+                            <span class="badge badge-success">Optimal</span>
+                        </div>
+
+                        <div class="schedule-item">
+                            <div class="schedule-info">
+                                <h4>Corn Field</h4>
+                                <p>Next irrigation: 3 days</p>
+                            </div>
+                            <span class="badge badge-success">Optimal</span>
+                        </div>
+
+                        <div class="schedule-item">
+                            <div class="schedule-info">
+                                <h4>Potato Field</h4>
+                                <p>Next irrigation: 4 days</p>
+                            </div>
+                            <span class="badge badge-warning">Monitor</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">View Full Schedule</button>
+                </section>
+
+                <!-- Active Alerts -->
+                <section class="dashboard-card">
+                    <h2>🔔 Active Alerts</h2>
+                    <div class="alerts-list">
+                        <div class="alert alert-info">
+                            <span class="alert-icon">ℹ️</span>
+                            <div class="alert-content">
+                                <h4>Weather Update</h4>
+                                <p>Rain expected in 2 days. Irrigation schedule will adjust automatically.</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <span class="alert-icon">⚠️</span>
+                            <div class="alert-content">
+                                <h4>High Temperature</h4>
+                                <p>Wheat field: Temperature above optimal range. Increase irrigation.</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success">
+                            <span class="alert-icon">✓</span>
+                            <div class="alert-content">
+                                <h4>Irrigation Complete</h4>
+                                <p>Tomato field irrigation completed successfully at 08:30 AM.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Weather Forecast -->
+                <section class="dashboard-card">
+                    <h2>🌤️ Weather Forecast</h2>
+                    <div class="weather-grid">
+                        <div class="weather-item">
+                            <div class="weather-day">Today</div>
+                            <div class="weather-icon">☀️</div>
+                            <div class="weather-temp">28°C</div>
+                            <p>Sunny</p>
+                        </div>
+
+                        <div class="weather-item">
+                            <div class="weather-day">Tomorrow</div>
+                            <div class="weather-icon">⛅</div>
+                            <div class="weather-temp">26°C</div>
+                            <p>Partly Cloudy</p>
+                        </div>
+
+                        <div class="weather-item">
+                            <div class="weather-day">Day 3</div>
+                            <div class="weather-icon">🌧️</div>
+                            <div class="weather-temp">22°C</div>
+                            <p>Rainy</p>
+                        </div>
+
+                        <div class="weather-item">
+                            <div class="weather-day">Day 4</div>
+                            <div class="weather-icon">⛅</div>
+                            <div class="weather-temp">25°C</div>
+                            <p>Cloudy</p>
+                        </div>
+
+                        <div class="weather-item">
+                            <div class="weather-day">Day 5</div>
+                            <div class="weather-icon">☀️</div>
+                            <div class="weather-temp">29°C</div>
+                            <p>Sunny</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section class="dashboard-card">
+                    <h2>⚡ Quick Actions</h2>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="startIrrigation()">
+                            <span>💧</span>
+                            <span>Start Irrigation</span>
+                        </button>
+                        <button class="action-btn" onclick="stopIrrigation()">
+                            <span>⛔</span>
+                            <span>Stop Irrigation</span>
+                        </button>
+                        <button class="action-btn" onclick="viewAnalytics()">
+                            <span>📊</span>
+                            <span>View Analytics</span>
+                        </button>
+                        <button class="action-btn" onclick="contactSupport()">
+                            <span>📞</span>
+                            <span>Contact Support</span>
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Footer -->
+            <div class="dashboard-footer">
+                <p>🌿 Powered by GreenGuard AI • Last Updated: <span id="update-time">Just now</span></p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Chatbot -->
+    <div id="chatbot" class="chatbot">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <span style="font-size: 1.5rem;">👨‍🌾</span>
+                <div>
+                    <h4>Krishi Sahayak</h4>
+                    <p>AI Farming Assistant</p>
+                </div>
+            </div>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+        </div>
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="chat-message assistant">
+                <p>🙏 Namaste! I am Krishi Sahayak, your AI farming assistant. How can I help you today?</p>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatbot-input" placeholder="Ask me anything about your crops..." onkeypress="handleChatInput(event)">
+            <button onclick="sendChatMessage()">Send</button>
+        </div>
+    </div>
+
+    <button class="chatbot-toggle" onclick="toggleChatbot()">🌾</button>
+
+    <script src="script.js"></script>
+</body>
+</html>

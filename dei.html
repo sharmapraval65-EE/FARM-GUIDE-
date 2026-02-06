@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>🌾 Soil Moisture Simulator — Smart Irrigation Scheduler</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <div class="header">
+      <h1>🌾 Soil Moisture Simulator</h1>
+      <div class="header-right">
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      </div>
+    </div>
+
+    <!-- Main layout -->
+    <div class="layout">
+      <!-- Sidebar controls -->
+      <div class="panel">
+        <!-- Horizon -->
+        <div class="section">
+          <div class="section-title">Simulation</div>
+          <label>Horizon (days)</label>
+          <input id="horizon" type="number" min="3" max="60" value="14" />
+          <p class="help-text">Duration of simulation in days (7–14 recommended)</p>
+        </div>
+
+        <!-- Soil -->
+        <div class="section">
+          <div class="section-title">Soil Properties</div>
+          <label>Field Capacity / Wilting Point (mm)</label>
+          <div class="input-row">
+            <input id="fc" type="number" value="120" placeholder="FC" />
+            <input id="pwp" type="number" value="40" placeholder="PWP" />
+          </div>
+          <label>Initial Soil Water (mm)</label>
+          <input id="s0" type="number" value="100" />
+        </div>
+
+        <!-- Crop & ET -->
+        <div class="section">
+          <div class="section-title">Crop & ET</div>
+          <label>Crop Coefficient (Kc)</label>
+          <input id="kc" type="number" step="0.05" value="0.9" />
+          <label>Reference ET0 (mm/day)</label>
+          <input id="et0" type="number" step="0.1" value="4.0" />
+          <label>ET0 Variability (±mm)</label>
+          <input id="et0_var" type="number" step="0.05" value="0.5" />
+        </div>
+
+        <!-- Weather -->
+        <div class="section">
+          <div class="section-title">Weather</div>
+          <label>Prob. Rain Each Day</label>
+          <input id="p_rain" type="number" step="0.01" min="0" max="1" value="0.25" />
+          <label>Max Rain Depth (mm)</label>
+          <input id="rain_max" type="number" value="25" />
+          <p class="help-text">Synthetic weather generator</p>
+        </div>
+
+        <!-- Scheduler -->
+        <div class="section">
+          <div class="section-title">Scheduler</div>
+          <label>Strategy</label>
+          <select id="mode">
+            <option value="rule">Rule-based (trigger)</option>
+            <option value="forecast">Forecast-aware</option>
+          </select>
+          <label>Trigger Threshold (fraction of AW)</label>
+          <input id="trigger_frac" type="number" step="0.05" min="0" max="1" value="0.4" />
+          <label>Strategy Type</label>
+          <select id="irrig_strategy">
+            <option value="fixed">Fixed depth</option>
+            <option value="fill">Fill to threshold</option>
+            <option value="smart">Smart</option>
+          </select>
+          <label>Fixed Irrigation Depth (mm)</label>
+          <input id="fixed_depth" type="number" value="20" />
+          <label>Irrigation Efficiency</label>
+          <input id="eff" type="number" step="0.05" min="0.5" max="1.0" value="0.9" />
+        </div>
+
+        <!-- Action buttons -->
+        <div class="controls-bar">
+          <button class="btn-primary" id="startBtn">▶ Start Simulation</button>
+          <button class="btn-ghost" id="pauseBtn">⏸ Pause</button>
+          <button class="btn-ghost" id="stepBtn">⏭ Step</button>
+        </div>
+
+        <!-- Metrics -->
+        <div class="metrics">
+          <div class="metric-card">
+            <div class="metric-label">Total Irrigation</div>
+            <div class="metric-value" id="cumI">0 mm</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Stress Days</div>
+            <div class="metric-value" id="stress">0</div>
+          </div>
+        </div>
+
+        <!-- Export -->
+        <button class="btn-secondary" id="downloadCSV" style="width: 100%; justify-content: center;">
+          📥 Export Schedule (CSV)
+        </button>
+      </div>
+
+      <!-- Visualization area -->
+      <div class="viz-area">
+        <div id="status" class="status">Ready. Click "Start Simulation" to begin.</div>
+        
+        <div class="viz-row">
+          <div class="panel" style="padding: 0; overflow: hidden;">
+            <div id="viz3d"></div>
+          </div>
+          <div class="panel" style="padding: 0;">
+            <div id="chart"></div>
+          </div>
+        </div>
+
+        <div class="panel table-wrapper">
+          <table id="schedule_table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Rain (mm)</th>
+                <th>ETc (mm)</th>
+                <th>Irrigation (mm)</th>
+                <th>Soil Water (mm)</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

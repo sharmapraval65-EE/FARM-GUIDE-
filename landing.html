@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenGuard AI - Smart Irrigation & Crop Wellness</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="logo-icon">🌿</span>
+                <h2>GreenGuard AI</h2>
+            </div>
+            <div class="nav-links">
+                <a href="landing.html" class="active" data-en="Home" data-hi="होम">Home</a>
+                <a href="index.html" data-en="Simulator" data-hi="सिमुलेटर">Simulator</a>
+                <a href="dashboard.html" data-en="Dashboard" data-hi="डैशबोर्ड">Dashboard</a>
+                <a href="CROP.html" data-en="Crop Info" data-hi="फसल जानकारी">Crop Info</a>
+                <a href="calculator.html" data-en="Calculator" data-hi="कैलकुलेटर">Calculator</a>
+            </div>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en" onclick="switchLanguage('en')">EN</button>
+                <button class="lang-btn" data-lang="hi" onclick="switchLanguage('hi')">HI</button>
+            </div>
+            <button class="btn btn-primary" onclick="goToDashboard()" data-en="Get Started" data-hi="शुरू करें">Get Started</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>AI Powered Smart Irrigation for Modern Farming</h1>
+            <p>Monitor soil, save water, increase yield.</p>
+            <button class="btn btn-hero" onclick="goToDashboard()">Go to Dashboard →</button>
+        </div>
+    </section>
+
+    <!-- Live Farm Status Preview -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Monitor Your Farm in Real-Time</h2>
+                <p>Everything you need to know about your farm at a glance</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💧</div>
+                    <div class="stat-label">Soil Moisture</div>
+                    <div class="stat-value">42%</div>
+                    <div class="stat-status">Optimal</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">🌱</div>
+                    <div class="stat-label">Crop Health</div>
+                    <div class="stat-value">88/100</div>
+                    <div class="stat-status">Good Condition</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">💦</div>
+                    <div class="stat-label">Next Irrigation</div>
+                    <div class="stat-value">6 hours</div>
+                    <div class="stat-status">AI Scheduled</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">🌤️</div>
+                    <div class="stat-label">Weather</div>
+                    <div class="stat-value">28°C</div>
+                    <div class="stat-status">Sunny</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="section section-light">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Farmers Choose GreenGuard AI</h2>
+                <p>Practical benefits that increase your farm productivity</p>
+            </div>
+
+            <div class="benefits-grid">
+                <div class="card">
+                    <div class="benefit-icon">💧</div>
+                    <h3>Save Water Automatically</h3>
+                    <p>AI detects exact water needs and irrigates only when required. Save up to 40% water.</p>
+                </div>
+
+                <div class="card">
+                    <div class="benefit-icon">🔔</div>
+                    <h3>Get Irrigation Alerts</h3>
+                    <p>Receive SMS and email alerts when your crops need water or face threats.</p>
+                </div>
+
+                <div class="card">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Increase Yield with Data</h3>
+                    <p>Make informed decisions based on real-time soil, weather, and crop health data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Three simple steps to smarter farming</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">📡</div>
+                    <h3>Sensors Monitor Farm</h3>
+                    <p>IoT sensors continuously track soil moisture, temperature, and humidity</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">🤖</div>
+                    <h3>AI Analyzes Data</h3>
+                    <p>Machine learning predicts optimal irrigation timing and water requirements</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">💧</div>
+                    <h3>Smart Irrigation</h3>
+                    <p>Automated scheduling or instant alerts guide your irrigation decisions</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta-section">
+        <div class="container">
+            <h2>Ready to Improve Your Farm Efficiency?</h2>
+            <p>Join thousands of farmers using AI to save water and increase yields</p>
+            <button class="btn btn-cta" onclick="goToDashboard()">Start Monitoring Now →</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>🌿 GreenGuard AI</h3>
+                    <p>Smart Irrigation & Crop Wellness System</p>
+                </div>
+                <div>
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                        <li><a href="calculator.html">Calculator</a></li>
+                        <li><a href="CROP.html">Crop Info</a></li>
+                        <li><a href="MANVENDRA..html">Analytics</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Contact</h4>
+                    <p>📍 Uttar Pradesh, India</p>
+                    <p>📧 info@greenguard.com</p>
+                    <p>📱 +91 9760-434089</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 GreenGuard AI. Nurturing fields with intelligence. 🌾</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Chatbot -->
+    <div id="chatbot" class="chatbot">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <span style="font-size: 1.5rem;">👨‍🌾</span>
+                <div>
+                    <h4>Krishi Sahayak</h4>
+                    <p>AI Farming Assistant</p>
+                </div>
+            </div>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+        </div>
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="chat-message assistant">
+                <p>🙏 Namaste! I am Krishi Sahayak, your AI farming assistant. How can I help you today?</p>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatbot-input" placeholder="Ask me anything about your crops..." onkeypress="handleChatInput(event)">
+            <button onclick="sendChatMessage()">Send</button>
+        </div>
+    </div>
+
+    <button class="chatbot-toggle" onclick="toggleChatbot()">🌾</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
