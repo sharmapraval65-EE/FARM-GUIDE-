@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kisan Sahayak - AI Farm Assistant</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #27ae60;
+            --primary-dark: #229954;
+            --secondary: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --info: #3498db;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+        }
+
+        .navbar-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-info {
+            font-size: 14px;
+            padding: 0 15px;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            height: calc(100vh - 60px);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar h3 {
+            color: var(--primary);
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .quick-question {
+            background: #f0f8ff;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #d4e6f1;
+            transition: all 0.3s;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .quick-question:hover {
+            background: #e8f4f8;
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: var(--dark);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            word-wrap: break-word;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .assistant .message-bubble {
+            background: #f0f0f0;
+            color: var(--dark);
+        }
+
+        .user .message-bubble {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-section h2 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-card strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .feature-card p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 12px 16px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #999;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                grid-column: 1;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--dark);
+        }
+
+        .empty-state-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h2 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🌾 Kisan Sahayak - Your AI Farm Assistant</h1>
+        <div class="navbar-actions">
+            <div class="user-info" id="userInfo">Welcome, Farmer!</div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <h1>Kisan Sahayak 🤖</h1>
+            <p class="subtitle">Your AI-powered farming assistant. Ask anything about crops, irrigation, fertilizers, weather, and more!</p>
+
+            <div id="messageArea">
+                <div class="welcome-section">
+                    <h2>Welcome to Your Smart Farm Assistant!</h2>
+                    <p>I'm here to help you with:</p>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <strong>🌱 Crop Advice</strong>
+                            <p>Best practices for your crops</p>
+                        </div>
+                        <div class="feature-card">
+                            <strong>💧 Irrigation</strong>
+                            <p>Water scheduling & management</p>
+                        </div>
+                        <div class="feature-card">
+                            <strong>🧪 Fertilizer</strong>
+                            <p>Nutrient recommendations</p>
+                        </div>
+                        <div class="feature-card">
+                            <strong>🌤️ Weather</strong>
+                            <p>Weather-based farming tips</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="message-container" id="messageContainer"></div>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <input type="text" id="userInput" placeholder="Ask me anything about farming... (e.g., How much water does wheat need?)" autocomplete="off">
+                    <button class="send-btn" onclick="sendMessage()" id="sendBtn">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div>
+                <h3>❓ Quick Questions</h3>
+                <div class="quick-question" onclick="askQuestion('How much water does wheat need?')">
+                    How much water does wheat need?
+                </div>
+                <div class="quick-question" onclick="askQuestion('When should I irrigate my cotton field?')">
+                    When should I irrigate my cotton field?
+                </div>
+                <div class="quick-question" onclick="askQuestion('What fertilizer is best for rice?')">
+                    What fertilizer is best for rice?
+                </div>
+                <div class="quick-question" onclick="askQuestion('How can I prevent crop diseases?')">
+                    How can I prevent crop diseases?
+                </div>
+                <div class="quick-question" onclick="askQuestion('Best time to plant vegetables?')">
+                    Best time to plant vegetables?
+                </div>
+            </div>
+
+            <div>
+                <h3>📚 Categories</h3>
+                <div class="category-btn" onclick="filterCategory('crops')">Crops</div>
+                <div class="category-btn" onclick="filterCategory('irrigation')">Irrigation</div>
+                <div class="category-btn" onclick="filterCategory('soil')">Soil</div>
+                <div class="category-btn" onclick="filterCategory('weather')">Weather</div>
+            </div>
+
+            <div>
+                <h3>📊 Your Data</h3>
+                <p style="font-size: 12px; color: #666;">
+                    Synced from your profile: Wheat, Rice, Cotton crops
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Knowledge base for AI responses
+        const knowledgeBase = {
+            'wheat': {
+                water: 'Wheat requires 450-650 mm of water throughout the growing season. Irrigate after 21 days of sowing, then every 20-25 days during the growing period.',
+                fertilizer: 'Apply 150-200 kg N/hectare for wheat. Use 50kg P and 40kg K per hectare.',
+                season: 'Wheat is a winter crop. Sow from October to November in North India.'
+            },
+            'rice': {
+                water: 'Rice needs 1000-1500 mm of water. Keep fields flooded 5-10 cm during growing season.',
+                fertilizer: 'Apply 80-100 kg N/hectare, 40-50 kg P, and 40-50 kg K per hectare.',
+                season: 'Rice is a monsoon crop. Sow from May to July.'
+            },
+            'cotton': {
+                water: 'Cotton requires 600-800 mm water. Critical irrigation stages: flowering and boll formation.',
+                fertilizer: 'Apply 120 kg N, 60 kg P, and 60 kg K per hectare.',
+                season: 'Cotton season: April to October in North India, May to November in South.'
+            },
+            'irrigation': {
+                drip: 'Drip irrigation saves 30-40% water. Best for vegetables and orchards.',
+                sprinkler: 'Sprinkler irrigation covers 80% of crops. Good for cereals.',
+                flood: 'Flood irrigation is traditional but wastes water. Use for rice fields.'
+            },
+            'disease': {
+                powdery: 'Powdery mildew: Spray sulfur or azoxystrobin fungicide every 15 days.',
+                blight: 'Leaf blight: Use copper fungicide. Remove infected leaves.',
+                rot: 'Root rot: Improve drainage, avoid waterlogging, use Trichoderma.'
+            },
+            'pest': {
+                bollworm: 'Bollworm in cotton: Use Bacillus thuringiensis or synthetic pyrethroids.',
+                locust: 'Locust swarms: Spray chlorpyrifos. Set up pheromone traps.',
+                aphid: 'Aphids: Spray neem oil or imidacloprid insecticide.'
+            }
+        };
+
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const messageContainer = document.getElementById('messageContainer');
+
+        // Check authentication
+        window.addEventListener('load', () => {
+            const currentUser = localStorage.getItem('farmGuideUser');
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+            document.getElementById('userInfo').textContent = `Welcome, ${user.email}!`;
+        });
+
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            userInput.value = '';
+            sendBtn.disabled = true;
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            // Generate AI response
+            setTimeout(() => {
+                removeTypingIndicator();
+                const response = generateAIResponse(message);
+                addMessage(response, 'assistant');
+                sendBtn.disabled = false;
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.textContent = text;
+            
+            messageDiv.appendChild(bubble);
+            messageContainer.appendChild(messageDiv);
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message assistant';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = '<div class="message-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
+            messageContainer.appendChild(typingDiv);
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        function generateAIResponse(userMessage) {
+            const msg = userMessage.toLowerCase();
+
+            // Check for specific crops
+            for (const crop in knowledgeBase) {
+                if (msg.includes(crop)) {
+                    if (msg.includes('water') || msg.includes('irrigat')) {
+                        return `🌾 **${crop.toUpperCase()} - Water Management**\n\n${knowledgeBase[crop].water}\n\n💡 Tip: Check soil moisture regularly before irrigating.`;
+                    }
+                    if (msg.includes('fertilizer') || msg.includes('nutrient')) {
+                        return `🌾 **${crop.toUpperCase()} - Fertilizer Guide**\n\n${knowledgeBase[crop].fertilizer}\n\n💡 Tip: Split nitrogen application in 2-3 doses for better results.`;
+                    }
+                    if (msg.includes('season') || msg.includes('sow') || msg.includes('plant')) {
+                        return `🌾 **${crop.toUpperCase()} - Planting Season**\n\n${knowledgeBase[crop].season}\n\n💡 Tip: Prepare soil 2-3 weeks before sowing.`;
+                    }
+                }
+            }
+
+            // Check for specific topics
+            if (msg.includes('disease') || msg.includes('blight') || msg.includes('mildew') || msg.includes('rot')) {
+                return `🦠 **Crop Disease Management**\n\nCommon diseases and treatments:\n- Powdery Mildew: Sulfur spray, every 15 days\n- Leaf Blight: Copper fungicide, remove infected parts\n- Root Rot: Improve drainage, use bioagents\n\n💡 Always use certified disease-resistant seeds.`;
+            }
+
+            if (msg.includes('pest') || msg.includes('worm') || msg.includes('locust') || msg.includes('aphid')) {
+                return `🐛 **Pest Management Tips**\n\nIntegrated Pest Management (IPM):\n1. Monitor crops regularly for pests\n2. Use biological controls when possible\n3. Apply chemical pesticides as last resort\n4. Rotate crops to break pest cycles\n\n💡 Set up pheromone traps to catch flying insects early.`;
+            }
+
+            if (msg.includes('drip') || msg.includes('sprinkler') || msg.includes('flood')) {
+                return `💧 **Irrigation Systems**\n\n- **Drip**: Saves 30-40% water, ideal for vegetables\n- **Sprinkler**: Covers 80% crops, good for cereals\n- **Flood**: Traditional, best for rice\n\n💡 Drip irrigation increases yield by 20-30% compared to flood irrigation.`;
+            }
+
+            if (msg.includes('soil') || msg.includes('pH') || msg.includes('nutrient')) {
+                return `🌱 **Soil Health Tips**\n\n- Test soil pH and nutrients annually\n- Add organic matter (compost) yearly\n- Use lime for acidic soils\n- Avoid waterlogging\n- Crop rotation improves soil fertility\n\n💡 Healthy soil = Healthy crops! Invest in soil testing.`;
+            }
+
+            if (msg.includes('weather') || msg.includes('rain') || msg.includes('temperature')) {
+                return `🌤️ **Weather-Based Farming**\n\n- Monitor weather forecasts before irrigation\n- Reduce irrigation if heavy rain is expected\n- Protect crops from frost in winter\n- Use mulching to retain soil moisture\n\n💡 Download a weather app to track local forecasts daily.`;
+            }
+
+            // Default responses
+            const defaultResponses = [
+                "That's a great question about farming! For specific advice, please mention the crop name (wheat, rice, cotton, etc.) or the issue you're facing (pest, disease, irrigation, etc.).",
+                "I'm here to help! Try asking about:\n- Specific crops (wheat, rice, cotton, vegetables)\n- Irrigation timing and methods\n- Fertilizer requirements\n- Disease and pest management\n- Weather tips",
+                "Could you provide more details? Let me know which crop you're asking about and I'll give you specific recommendations.",
+                "💡 Remember:\n- Different crops need different water amounts\n- Soil testing is crucial\n- Timely irrigation saves water\n\nWhat specific crop would you like advice on?"
+            ];
+
+            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+        }
+
+        function askQuestion(question) {
+            userInput.value = question;
+            sendMessage();
+        }
+
+        function filterCategory(category) {
+            let question = '';
+            switch(category) {
+                case 'crops': question = 'What crops should I grow?'; break;
+                case 'irrigation': question = 'Tell me about irrigation methods'; break;
+                case 'soil': question = 'How do I improve soil health?'; break;
+                case 'weather': question = 'How does weather affect farming?'; break;
+            }
+            userInput.value = question;
+            sendMessage();
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('farmGuideUser');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

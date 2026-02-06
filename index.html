@@ -593,7 +593,12 @@
           <span class="header-subtitle">Crop Water Stress Simulator & Irrigation System</span>
         </div>
       </div>
-      <button class="theme-toggle" id="themeToggle">🌙</button>
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <a href="user-dashboard.html" id="dashboardBtn" class="theme-toggle" style="background: rgba(39,174,96,0.9); border: none; text-decoration: none; cursor: pointer; display: none;">📊 Dashboard</a>
+        <a href="kisan-sahayak.html" id="kisanBtn" class="theme-toggle" style="background: rgba(52,152,219,0.8); border: none; text-decoration: none; cursor: pointer; display: none;">🤖 Kisan Sahayak</a>
+        <a href="login.html" id="loginBtn" class="theme-toggle" style="background: rgba(52,152,219,0.8); border: none; text-decoration: none; cursor: pointer;">🔐 Login</a>
+        <button class="theme-toggle" id="themeToggle">🌙</button>
+      </div>
     </div>
 
     <div class="container">
@@ -727,6 +732,26 @@
     };
 
     let currentSoilType = 'loam';
+
+    // Check authentication status
+    function checkAuth() {
+      const currentUser = localStorage.getItem('farmGuideUser');
+      const loginBtn = document.getElementById('loginBtn');
+      const dashboardBtn = document.getElementById('dashboardBtn');
+      const kisanBtn = document.getElementById('kisanBtn');
+      
+      if (currentUser) {
+        loginBtn.style.display = 'none';
+        dashboardBtn.style.display = 'block';
+        kisanBtn.style.display = 'block';
+      } else {
+        loginBtn.style.display = 'block';
+        dashboardBtn.style.display = 'none';
+        kisanBtn.style.display = 'none';
+      }
+    }
+
+    window.addEventListener('load', checkAuth);
 
     function initTheme() {
       const isDark = localStorage.getItem('theme') === 'dark';

@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Farm Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #27ae60;
+            --primary-dark: #229954;
+            --secondary: #f39c12;
+            --accent: #e74c3c;
+            --info: #3498db;
+            --success: #27ae60;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-buttons button, .nav-buttons a {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-buttons button:hover, .nav-buttons a:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .user-greeting {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .container {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-text h2 {
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .welcome-text p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .quick-action-btn {
+            background: linear-gradient(135deg, var(--info) 0%, #2980b9 100%);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .crop-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--primary);
+        }
+
+        .crop-item strong {
+            color: var(--dark);
+        }
+
+        .crop-item small {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .action-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-links a, .action-links button {
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .action-links a:hover, .action-links button:hover {
+            background: var(--primary-dark);
+        }
+
+        .activity-item {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-time {
+            color: #999;
+            font-size: 11px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .save-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #ddd;
+            color: var(--dark);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .welcome-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .sync-status {
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🌾 Farm Guide Dashboard</h1>
+        <div class="nav-buttons">
+            <a href="kisan-sahayak.html">🤖 Kisan Sahayak</a>
+            <a href="index.html">📊 Simulator</a>
+            <a href="calculator.html">🧮 Calculator</a>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <div class="welcome-text">
+                <h2 id="greetingName">Welcome, Farmer! 👋</h2>
+                <p>Manage your crops, track irrigation, and get personalized recommendations</p>
+                <div class="sync-status">✅ Data synced to cloud</div>
+            </div>
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="openAddCropModal()">➕ Add Crop</button>
+                <button class="quick-action-btn" onclick="openScheduleModal()">📅 Schedule Irrigation</button>
+                <button class="quick-action-btn" onclick="openSettingsModal()">⚙️ Settings</button>
+            </div>
+        </div>
+
+        <!-- Statistics Row -->
+        <div class="stats-row">
+            <div class="card">
+                <h3>📊 Your Farm Overview</h3>
+                <div class="stat-box">
+                    <div>
+                        <div class="stat-number" id="totalCrops">0</div>
+                        <div class="stat-label">Total Crops</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="stat-number" id="totalArea">0</div>
+                        <div class="stat-label">Acres</div>
+                    </div>
+                </div>
+                <button class="action-links" style="display: block; width: 100%; margin-top: 15px;" onclick="viewFarmDetails()" style="padding: 10px; border: none; background: var(--primary); color: white; border-radius: 5px; cursor: pointer;">View Details</button>
+            </div>
+
+            <div class="card">
+                <h3>🌾 Active Crops</h3>
+                <div id="activeCropsList" class="card-content">
+                    <div class="empty-state">
+                        <p>No crops added yet</p>
+                        <button class="action-links" style="display: inline-block; margin-top: 10px;" onclick="openAddCropModal()">Add First Crop</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💧 Next Irrigation</h3>
+                <div id="irrigationStatus" class="card-content">
+                    <p>No schedule set</p>
+                    <button class="action-links" style="display: inline-block; margin-top: 10px;" onclick="openScheduleModal()">Schedule Now</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- My Crops Card -->
+            <div class="card">
+                <h3>🌱 My Crops</h3>
+                <div id="cropsList" class="card-content">
+                    <div class="empty-state-icon">🌾</div>
+                    <p style="text-align: center; color: #999;">No crops added yet. Start by adding your first crop!</p>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card">
+                <h3>📝 Recent Activity</h3>
+                <div id="activityList" class="card-content">
+                    <div class="activity-item">
+                        <strong>Dashboard accessed</strong>
+                        <div class="activity-time">Just now</div>
+                    </div>
+                    <div class="activity-item">
+                        <strong>Account created</strong>
+                        <div class="activity-time">Today</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Tips -->
+            <div class="card">
+                <h3>💡 Smart Recommendations</h3>
+                <div class="card-content">
+                    <p>✓ Check weather forecast before irrigation</p>
+                    <p>✓ Monitor soil moisture with moisture meter</p>
+                    <p>✓ Mulch helps retain soil moisture</p>
+                    <p>✓ Drip irrigation saves 30-40% water</p>
+                </div>
+            </div>
+
+            <!-- Resources -->
+            <div class="card">
+                <h3>📚 Resources</h3>
+                <div class="action-links">
+                    <a href="kisan-sahayak.html">🤖 Ask Kisan Sahayak</a>
+                    <a href="index.html">📊 Run Simulator</a>
+                    <a href="calculator.html">🧮 Water Calculator</a>
+                </div>
+            </div>
+
+            <!-- Data Management -->
+            <div class="card">
+                <h3>🔐 Data & Privacy</h3>
+                <div class="card-content">
+                    <p><strong>Cloud Backup:</strong> ✅ Enabled</p>
+                    <p><strong>Auto-Sync:</strong> Every 1 hour</p>
+                    <p><strong>Last Sync:</strong> Just now</p>
+                    <button class="action-links" style="display: block; width: 100%; margin-top: 10px;" onclick="exportData()">📥 Export Data</button>
+                </div>
+            </div>
+
+            <!-- Farm Profile -->
+            <div class="card">
+                <h3>👨‍🌾 Farm Profile</h3>
+                <div class="card-content">
+                    <p id="farmProfileInfo">
+                        <strong>Loading profile...</strong>
+                    </p>
+                    <button class="action-links" style="display: block; width: 100%; margin-top: 10px;" onclick="openSettingsModal()">Edit Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Crop Modal -->
+    <div id="addCropModal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Crop 🌾</h2>
+            <form id="cropForm">
+                <div class="form-group">
+                    <label>Crop Name</label>
+                    <select id="cropName" required>
+                        <option value="">Select a crop</option>
+                        <option value="Wheat">Wheat</option>
+                        <option value="Rice">Rice</option>
+                        <option value="Cotton">Cotton</option>
+                        <option value="Sugarcane">Sugarcane</option>
+                        <option value="Maize">Maize</option>
+                        <option value="Vegetables">Vegetables</option>
+                        <option value="Fruits">Fruits</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Area (acres)</label>
+                    <input type="number" id="cropArea" min="0" step="0.5" required>
+                </div>
+                <div class="form-group">
+                    <label>Sowing Date</label>
+                    <input type="date" id="sowingDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Expected Harvest Date</label>
+                    <input type="date" id="harvestDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Soil Type</label>
+                    <select id="soilType" required>
+                        <option value="">Select soil type</option>
+                        <option value="Clay">Clay (High retention)</option>
+                        <option value="Sandy">Sandy (Low retention)</option>
+                        <option value="Loam">Loam (Balanced)</option>
+                        <option value="Silty">Silty (Moderate retention)</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="save-btn">Save Crop</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal('addCropModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Schedule Irrigation Modal -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <h2>Schedule Irrigation 💧</h2>
+            <form id="scheduleForm">
+                <div class="form-group">
+                    <label>Select Crop</label>
+                    <select id="scheduleCrop" required>
+                        <option value="">Select a crop</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Irrigation Date</label>
+                    <input type="date" id="irrigationDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Water Amount (mm)</label>
+                    <input type="number" id="waterAmount" min="0" step="5" required>
+                </div>
+                <div class="form-group">
+                    <label>Method</label>
+                    <select id="irrigationMethod" required>
+                        <option value="">Select method</option>
+                        <option value="Drip">Drip Irrigation</option>
+                        <option value="Sprinkler">Sprinkler</option>
+                        <option value="Flood">Flood/Basin</option>
+                        <option value="Furrow">Furrow</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="save-btn">Schedule</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal('scheduleModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2>Settings ⚙️</h2>
+            <form id="settingsForm">
+                <div class="form-group">
+                    <label>Language</label>
+                    <select id="language">
+                        <option value="en">English</option>
+                        <option value="hi">Hindi (हिंदी)</option>
+                        <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="notificationsEnabled" checked>
+                        Enable Push Notifications
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="emailNotifications" checked>
+                        Email Notifications
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Irrigation Reminder</label>
+                    <select id="reminderFrequency">
+                        <option value="1">Daily</option>
+                        <option value="2">Every 2 days</option>
+                        <option value="3">Every 3 days</option>
+                        <option value="7">Weekly</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="save-btn">Save Settings</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal('settingsModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let userCrops = [];
+        let irrigationSchedule = [];
+
+        // Check authentication
+        window.addEventListener('load', () => {
+            const currentUser = localStorage.getItem('farmGuideUser');
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+            document.getElementById('greetingName').textContent = `Welcome, ${user.email.split('@')[0]}! 👋`;
+            document.getElementById('farmProfileInfo').innerHTML = `
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Farm Region:</strong> ${localStorage.getItem('farmState') || 'Not set'}</p>
+                <p><strong>Member Since:</strong> Today</p>
+            `;
+
+            loadUserData();
+        });
+
+        function loadUserData() {
+            const userEmail = JSON.parse(localStorage.getItem('farmGuideUser')).email;
+            const allCrops = JSON.parse(localStorage.getItem('farmGuideAllCrops') || '{}');
+            userCrops = allCrops[userEmail] || [];
+            
+            displayCrops();
+            updateStats();
+        }
+
+        function displayCrops() {
+            const cropsList = document.getElementById('cropsList');
+            const activeCropsList = document.getElementById('activeCropsList');
+            const scheduleCrop = document.getElementById('scheduleCrop');
+
+            // Clear existing options except default
+            while (scheduleCrop.options.length > 1) {
+                scheduleCrop.remove(1);
+            }
+
+            if (userCrops.length === 0) {
+                cropsList.innerHTML = `
+                    <div class="empty-state-icon">🌾</div>
+                    <p style="text-align: center; color: #999;">No crops added yet. Start by adding your first crop!</p>
+                `;
+                activeCropsList.innerHTML = `
+                    <p style="text-align: center; color: #999;">Add crops to see active ones</p>
+                `;
+                return;
+            }
+
+            let cropsHTML = '';
+            userCrops.forEach((crop, index) => {
+                cropsHTML += `
+                    <div class="crop-item">
+                        <div>
+                            <strong>${crop.name}</strong>
+                            <small>${crop.area} acres | ${crop.soilType}</small>
+                        </div>
+                        <span class="badge active">Active</span>
+                    </div>
+                `;
+                
+                scheduleCrop.innerHTML += `<option value="${crop.name}">${crop.name}</option>`;
+            });
+
+            cropsList.innerHTML = cropsHTML;
+            activeCropsList.innerHTML = cropsHTML;
+
+            document.getElementById('totalCrops').textContent = userCrops.length;
+            document.getElementById('totalArea').textContent = userCrops.reduce((sum, c) => sum + parseFloat(c.area), 0).toFixed(1);
+        }
+
+        function updateStats() {
+            // Update irrigation status
+            if (irrigationSchedule.length > 0) {
+                const nextIrrigation = irrigationSchedule[0];
+                document.getElementById('irrigationStatus').innerHTML = `
+                    <p><strong>Next Irrigation:</strong> ${nextIrrigation.date}</p>
+                    <p><strong>Crop:</strong> ${nextIrrigation.crop}</p>
+                    <p><strong>Amount:</strong> ${nextIrrigation.water} mm</p>
+                `;
+            }
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function openAddCropModal() { openModal('addCropModal'); }
+        function openScheduleModal() { openModal('scheduleModal'); }
+        function openSettingsModal() { openModal('settingsModal'); }
+
+        // Form submissions
+        document.getElementById('cropForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const crop = {
+                name: document.getElementById('cropName').value,
+                area: document.getElementById('cropArea').value,
+                sowingDate: document.getElementById('sowingDate').value,
+                harvestDate: document.getElementById('harvestDate').value,
+                soilType: document.getElementById('soilType').value
+            };
+
+            const userEmail = JSON.parse(localStorage.getItem('farmGuideUser')).email;
+            const allCrops = JSON.parse(localStorage.getItem('farmGuideAllCrops') || '{}');
+            
+            if (!allCrops[userEmail]) {
+                allCrops[userEmail] = [];
+            }
+            
+            allCrops[userEmail].push(crop);
+            localStorage.setItem('farmGuideAllCrops', JSON.stringify(allCrops));
+
+            loadUserData();
+            closeModal('addCropModal');
+            document.getElementById('cropForm').reset();
+            
+            alert('Crop added successfully!');
+        });
+
+        document.getElementById('scheduleForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const schedule = {
+                crop: document.getElementById('scheduleCrop').value,
+                date: document.getElementById('irrigationDate').value,
+                water: document.getElementById('waterAmount').value,
+                method: document.getElementById('irrigationMethod').value
+            };
+
+            irrigationSchedule.push(schedule);
+            irrigationSchedule.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            updateStats();
+            closeModal('scheduleModal');
+            document.getElementById('scheduleForm').reset();
+            
+            alert('Irrigation scheduled successfully!');
+        });
+
+        document.getElementById('settingsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const settings = {
+                language: document.getElementById('language').value,
+                notifications: document.getElementById('notificationsEnabled').checked,
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                reminderFrequency: document.getElementById('reminderFrequency').value
+            };
+
+            localStorage.setItem('farmGuideSettings', JSON.stringify(settings));
+            closeModal('settingsModal');
+            alert('Settings saved successfully!');
+        });
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('farmGuideUser');
+                window.location.href = 'login.html';
+            }
+        }
+
+        function exportData() {
+            const userData = {
+                crops: userCrops,
+                schedule: irrigationSchedule,
+                exportDate: new Date()
+            };
+
+            const dataStr = JSON.stringify(userData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'farm-guide-data.json';
+            link.click();
+        }
+
+        function viewFarmDetails() {
+            alert(`Farm Summary:\n\nTotal Crops: ${userCrops.length}\nTotal Area: ${userCrops.reduce((sum, c) => sum + parseFloat(c.area), 0).toFixed(1)} acres\n\nUse the Simulator tool for detailed analysis.`);
+        }
+
+        // Close modals on background click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
